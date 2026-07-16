@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand colours — change here to re-skin the entire product */
+  --color-primary-red: #c5161d;
+  --color-deep-red: #8e0f16;
+  --color-primary-yellow: #ffc400;
+  --color-warm-yellow: #ffd84f;
+  --color-warm-cream: #fff6e8;
+  --color-soft-cream: #f8ebd9;
+  --color-white: #ffffff;
+  --color-charcoal: #171717;
+  --color-soft-black: #242424;
+  --color-body-grey: #666666;
+  --color-border-grey: #e4d8c8;
+  --color-success-green: #16834b;
+  --color-warning-orange: #e47700;
+  --color-error-red: #c62828;
+  --color-info-blue: #1769aa;
+
+  --background: var(--color-warm-cream);
+  --foreground: var(--color-charcoal);
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+
+  --shadow-soft: 0 1px 2px rgba(23, 23, 23, 0.04), 0 8px 24px -12px rgba(23, 23, 23, 0.12);
+  --shadow-lift: 0 4px 8px rgba(23, 23, 23, 0.06), 0 20px 40px -16px rgba(23, 23, 23, 0.18);
 }
 
 @theme inline {
+  --color-primary: var(--color-primary-red);
+  --color-primary-deep: var(--color-deep-red);
+  --color-accent: var(--color-primary-yellow);
+  --color-accent-warm: var(--color-warm-yellow);
+  --color-cream: var(--color-warm-cream);
+  --color-cream-soft: var(--color-soft-cream);
+  --color-charcoal: var(--color-charcoal);
+  --color-soft-black: var(--color-soft-black);
+  --color-body: var(--color-body-grey);
+  --color-border: var(--color-border-grey);
+  --color-success: var(--color-success-green);
+  --color-warning: var(--color-warning-orange);
+  --color-error: var(--color-error-red);
+  --color-info: var(--color-info-blue);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-primary-yellow);
+  color: var(--color-charcoal);
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary-red);
+  outline-offset: 2px;
 }

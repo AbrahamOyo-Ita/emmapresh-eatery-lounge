@@ -1,65 +1,108 @@
-import Image from "next/image";
+import { Hero } from "@/components/home/hero";
+import { QuickServices } from "@/components/home/quick-services";
+import { PopularMenu } from "@/components/home/popular-menu";
+import { JunkFoodStrip } from "@/components/home/junk-food-strip";
+import { FeatureSection } from "@/components/home/feature-section";
+import { LocationsSection } from "@/components/home/locations-section";
+import { TestimonialsSection } from "@/components/home/testimonials-section";
+import { FaqSection } from "@/components/home/faq-section";
+import { GallerySection } from "@/components/home/gallery-section";
+import { getPopularItems } from "@/services/menu-service";
+import { getBranches } from "@/services/branch-service";
 
-export default function Home() {
+export default async function HomePage() {
+  const [popularItems, branches] = await Promise.all([getPopularItems(), getBranches()]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <Hero />
+      <QuickServices />
+      <PopularMenu items={popularItems} />
+      <JunkFoodStrip />
+
+      <FeatureSection
+        eyebrow="Busy Professionals"
+        title="Meals by Litre & Weekly Plans"
+        description="Soups, stews, rice and proteins portioned by the litre — perfect for professionals and families who don't have time to cook. Choose a one-off order or a recurring weekly plan."
+        bullets={[
+          "Order soups, stews, sauces and rice by the litre",
+          "Choose 1L, 2L, 3L or 5L sizes, or a custom quantity",
+          "Set up weekly or monthly delivery schedules",
+          "Pause, skip or renew your plan anytime",
+        ]}
+        cta={{ label: "Order by Litre", href: "/litre-meals" }}
+        secondaryCta={{ label: "View Meal Plans", href: "/meal-plans" }}
+        icon="soup"
+      />
+
+      <FeatureSection
+        tone="cream"
+        imageSide="left"
+        eyebrow="Events & Gatherings"
+        title="Indoor & Outdoor Catering"
+        description="From weddings and corporate events to birthdays and conferences — our catering team handles menu planning, service staff, equipment and delivery."
+        bullets={[
+          "Indoor and outdoor catering across all branches",
+          "Buffet or plated service styles",
+          "Servers, equipment and decoration on request",
+          "Transparent quotation before any payment",
+        ]}
+        cta={{ label: "Request a Quote", href: "/catering/request-quote" }}
+        secondaryCta={{ label: "See Packages", href: "/catering" }}
+        icon="event"
+      />
+
+      <FeatureSection
+        eyebrow="Bakery"
+        title="Cakes & Custom Designs"
+        description="Browse ready-made cakes in stock or request a fully custom cake — upload a reference image and our bakery team will quote and design it for you."
+        bullets={[
+          "Ready cakes with same-day pickup on select items",
+          "Custom cakes for weddings, birthdays and corporate events",
+          "Upload inspiration images for your design",
+          "Track your order from design to delivery",
+        ]}
+        cta={{ label: "Order a Cake", href: "/cakes" }}
+        secondaryCta={{ label: "Custom Cake Request", href: "/cakes/custom-order" }}
+        icon="cake"
+      />
+
+      <FeatureSection
+        tone="cream"
+        imageSide="left"
+        eyebrow="Academy"
+        title="Cooking & Baking Academy"
+        description="Learn professional cooking and baking from experienced instructors — from beginner weekend classes to certified professional programmes."
+        bullets={[
+          "Beginner to professional cooking and baking tracks",
+          "Weekend, private and corporate training options",
+          "Certificate of completion on most courses",
+          "In-person, online and hybrid formats",
+        ]}
+        cta={{ label: "Explore Courses", href: "/academy" }}
+        secondaryCta={{ label: "Apply Now", href: "/academy/apply" }}
+        icon="academy"
+      />
+
+      <FeatureSection
+        eyebrow="Event Halls"
+        title="Book an Event Hall"
+        description="Elegant, well-equipped event spaces for weddings, conferences and private celebrations — complete with catering, drinks and decoration support."
+        bullets={[
+          "Flexible banquet, theatre and boardroom layouts",
+          "In-house catering, drinks and decoration support",
+          "Backup power, sound system and parking",
+          "Availability request with quotation",
+        ]}
+        cta={{ label: "Request Availability", href: "/halls/request-booking" }}
+        secondaryCta={{ label: "View Halls", href: "/halls" }}
+        icon="hall"
+      />
+
+      <LocationsSection branches={branches} />
+      <TestimonialsSection />
+      <FaqSection />
+      <GallerySection />
+    </>
   );
 }
