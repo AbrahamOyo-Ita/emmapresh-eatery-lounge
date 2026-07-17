@@ -14,15 +14,15 @@ const categoryIcon = {
 export function GallerySection() {
   const images = galleryImages.slice(0, 10);
   return (
-    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+    <section className="motion-section mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <SectionHeading eyebrow="Moments" title="EmmaPresh Gallery" cta={{ label: "View Full Gallery", href: "/gallery" }} />
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="motion-grid grid grid-cols-2 gap-3 sm:grid-cols-5">
         {images.map((image) => (
           <FoodImage
             key={image.id}
             name={image.alt}
             icon={categoryIcon[image.category]}
-            className="aspect-square w-full rounded-2xl"
+            className="aspect-square w-full rounded-card"
           />
         ))}
       </div>

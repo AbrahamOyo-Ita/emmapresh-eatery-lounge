@@ -19,9 +19,9 @@ import { cn } from "@/lib/utils";
 
 const GRADIENTS = [
   "from-primary/90 to-deep-red",
-  "from-accent to-warm-yellow",
+  "from-deep-red to-primary",
   "from-charcoal to-soft-black",
-  "from-primary to-accent",
+  "from-primary to-charcoal",
   "from-deep-red to-charcoal",
 ];
 
@@ -68,7 +68,7 @@ export function FoodImage({ name, icon = "default", className, iconClassName }: 
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center overflow-hidden bg-gradient-to-br",
+        "food-image-art relative flex items-center justify-center overflow-hidden bg-gradient-to-br",
         gradient,
         className
       )}
@@ -76,14 +76,14 @@ export function FoodImage({ name, icon = "default", className, iconClassName }: 
       aria-label={name}
     >
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage:
             "radial-gradient(circle at 20% 20%, white 0%, transparent 35%), radial-gradient(circle at 80% 70%, white 0%, transparent 30%)",
         }}
         aria-hidden="true"
       />
-      <Icon className={cn("relative h-10 w-10 text-white/90", iconClassName)} strokeWidth={1.5} aria-hidden="true" />
+      <Icon className={cn("food-image-icon relative h-10 w-10 text-white/90", iconClassName)} strokeWidth={1.5} aria-hidden="true" />
     </div>
   );
 }

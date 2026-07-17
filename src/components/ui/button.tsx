@@ -3,21 +3,23 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 export const buttonVariants = cva(
-  "focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50",
+  "focus-ring inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-white hover:bg-primary-deep active:scale-[0.98] shadow-[0_8px_20px_-8px_rgba(197,22,29,0.55)]",
-        accent: "bg-accent text-charcoal hover:bg-accent-warm active:scale-[0.98] shadow-[0_8px_20px_-8px_rgba(255,196,0,0.55)]",
-        outline: "border-2 border-charcoal text-charcoal bg-transparent hover:bg-charcoal hover:text-white",
+        primary: "bg-primary text-white hover:bg-primary-deep active:scale-[0.98]",
+        light: "bg-white text-primary hover:bg-white/90 active:scale-[0.98]",
+        accent: "bg-accent text-charcoal hover:bg-accent-warm active:scale-[0.98]",
+        outline: "border border-charcoal text-charcoal bg-transparent hover:bg-charcoal hover:text-white",
+        outlineLight: "border border-white/60 text-white bg-transparent hover:bg-white hover:text-primary",
         ghost: "text-charcoal hover:bg-black/5",
         subtle: "bg-cream-soft text-charcoal hover:bg-border",
         link: "text-primary underline-offset-4 hover:underline p-0 h-auto",
       },
       size: {
-        sm: "h-9 px-4 text-xs",
-        md: "h-11 px-6",
-        lg: "h-[3.25rem] px-8 text-base",
+        sm: "h-8 px-3 text-xs",
+        md: "h-10 px-5 text-sm",
+        lg: "h-11 px-6 text-sm",
         icon: "h-10 w-10",
       },
     },

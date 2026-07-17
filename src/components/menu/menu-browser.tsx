@@ -110,8 +110,8 @@ export function MenuBrowser({
 
   return (
     <div>
-      <div className="sticky top-16 z-20 -mx-4 border-b border-border bg-cream/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-        <div className="mx-auto flex max-w-7xl items-center gap-3">
+      <div className="sticky top-16 z-20 border-y border-border bg-white/95 px-4 py-5 backdrop-blur sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center gap-4">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-body" aria-hidden="true" />
             <Input
@@ -130,11 +130,11 @@ export function MenuBrowser({
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
-        <div className="mx-auto mt-3 flex max-w-7xl gap-2 overflow-x-auto pb-1">
+        <div className="mx-auto mt-5 flex max-w-7xl gap-2.5 overflow-x-auto pb-1.5">
           <button
             onClick={() => setActiveCategory("all")}
             className={cn(
-              "focus-ring shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors",
+              "focus-ring shrink-0 rounded-control px-4 py-2 text-xs font-semibold transition-colors",
               activeCategory === "all" ? "bg-charcoal text-white" : "bg-white text-charcoal border border-border"
             )}
           >
@@ -145,7 +145,7 @@ export function MenuBrowser({
               key={cat.slug}
               onClick={() => setActiveCategory(cat.slug)}
               className={cn(
-                "focus-ring shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors",
+                "focus-ring shrink-0 rounded-control px-4 py-2 text-xs font-semibold transition-colors",
                 activeCategory === cat.slug ? "bg-charcoal text-white" : "bg-white text-charcoal border border-border"
               )}
             >
@@ -155,7 +155,7 @@ export function MenuBrowser({
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[220px_1fr]">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[260px_1fr] lg:py-16">
         <aside className="hidden lg:block">
           <div className="sticky top-40">{FilterPanel}</div>
         </aside>
@@ -166,7 +166,7 @@ export function MenuBrowser({
               Select a branch to see accurate prices and availability for your location.
             </p>
           )}
-          <p className="mb-4 text-sm text-body">{filtered.length} items found</p>
+          <p className="mb-6 text-sm text-body">{filtered.length} items found</p>
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center gap-3 rounded-card border border-dashed border-border py-16 text-center">
               <p className="font-display text-lg text-charcoal">No items match your filters</p>
@@ -175,7 +175,7 @@ export function MenuBrowser({
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-7 xl:grid-cols-3">
               {filtered.map((item) => (
                 <MenuItemCard key={item.id} item={item} />
               ))}

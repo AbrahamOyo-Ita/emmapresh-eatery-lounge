@@ -43,10 +43,10 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
   }
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+    <div className="group relative flex flex-col overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
       <Link href={`/menu/item/${item.slug}`} className="focus-ring block">
         <div className="relative">
-          <FoodImage name={item.name} icon={iconForCategory(item.categorySlug)} className="h-40 w-full" />
+          <FoodImage name={item.name} icon={iconForCategory(item.categorySlug)} className="h-52 w-full sm:h-48" />
           <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5">
             {item.isPopular && <Badge variant="primary">Popular</Badge>}
             {item.isNew && <Badge variant="accent">New</Badge>}
@@ -64,13 +64,13 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
         <Heart className={cn("h-4 w-4", favourited && "fill-primary text-primary")} aria-hidden="true" />
       </button>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-5">
         <Link href={`/menu/item/${item.slug}`} className="focus-ring">
-          <h3 className="font-display text-sm leading-snug text-charcoal">{item.name}</h3>
+          <h3 className="font-display text-base font-semibold leading-snug text-charcoal">{item.name}</h3>
         </Link>
-        <p className="mt-1 line-clamp-2 text-xs text-body">{item.description}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-body">{item.description}</p>
 
-        <div className="mt-2 flex items-center gap-3 text-xs text-body">
+        <div className="mt-4 flex items-center gap-4 text-xs text-body">
           <span className="flex items-center gap-1">
             <Star className="h-3.5 w-3.5 fill-accent text-accent" aria-hidden="true" />
             {item.rating} ({item.reviewCount})
@@ -81,7 +81,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           </span>
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-between">
           <span className="font-display text-base text-charcoal">{formatCurrency(price)}</span>
           {soldOut ? (
             <span className="text-xs font-semibold text-error">Unavailable</span>

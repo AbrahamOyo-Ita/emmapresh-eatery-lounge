@@ -4,15 +4,15 @@ import { testimonials } from "@/data/testimonials";
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-cream-soft py-14">
+    <section className="motion-section bg-primary py-10 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <SectionHeading eyebrow="Reviews" title="Our Customer Feedback" align="center" />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <SectionHeading eyebrow="Reviews" title="Our Customer Feedback" align="center" tone="dark" />
+        <div className="motion-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => (
-            <div key={t.id} className="rounded-card border border-border/60 bg-white p-5 shadow-[var(--shadow-soft)]">
+            <div key={t.id} className="rounded-card border border-white/15 bg-white p-4 shadow-[var(--shadow-soft)]">
               <div className="flex items-center gap-0.5" aria-label={`${t.rating} out of 5 stars`}>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < t.rating ? "fill-accent text-accent" : "text-border"}`} aria-hidden="true" />
+                  <Star key={i} className={`h-3.5 w-3.5 ${i < t.rating ? "fill-primary text-primary" : "text-border"}`} aria-hidden="true" />
                 ))}
               </div>
               <p className="mt-3 text-sm text-charcoal">&ldquo;{t.quote}&rdquo;</p>

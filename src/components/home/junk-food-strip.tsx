@@ -16,14 +16,14 @@ const junkFood: { name: string; href: string; icon: FoodIconKey }[] = [
 
 export function JunkFoodStrip() {
   return (
-    <section className="bg-cream-soft py-14">
+    <section className="motion-section bg-primary-deep py-10 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <SectionHeading eyebrow="Cravings" title="Junk Food & Cravings" cta={{ label: "See All", href: "/menu/pizza" }} />
-        <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
+        <SectionHeading eyebrow="Cravings" title="Junk Food & Cravings" cta={{ label: "See All", href: "/menu/pizza" }} tone="dark" />
+        <div className="motion-grid grid grid-cols-4 gap-3 sm:grid-cols-8">
           {junkFood.map((food) => (
             <Link key={food.name} href={food.href} className="focus-ring group flex flex-col items-center gap-2 text-center">
-              <FoodImage name={food.name} icon={food.icon} className="h-16 w-16 rounded-2xl transition-transform group-hover:-translate-y-1 sm:h-20 sm:w-20" iconClassName="h-7 w-7" />
-              <span className="text-xs font-semibold text-charcoal">{food.name}</span>
+              <FoodImage name={food.name} icon={food.icon} className="h-14 w-14 rounded-card transition-transform group-hover:-translate-y-0.5 sm:h-16 sm:w-16" iconClassName="h-6 w-6" />
+              <span className="text-xs font-semibold text-white/85">{food.name}</span>
             </Link>
           ))}
         </div>

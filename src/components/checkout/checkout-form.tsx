@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Bike, Store, UtensilsCrossed, Check, ChevronLeft, ChevronRight } from "lucide-react";
-import { Input, Label, FieldError, Textarea } from "@/components/ui/input";
+import { Input, Label, FieldError, Textarea, Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BranchSelector } from "@/components/layout/branch-selector";
 import { checkoutSchema, type CheckoutFormValues } from "@/schemas/checkout";
@@ -229,10 +229,10 @@ export function CheckoutForm() {
               )}
               <div>
                 <Label htmlFor="requested-time">Preferred Time</Label>
-                <select
+                <Select
                   id="requested-time"
                   {...register("requestedTime")}
-                  className="focus-ring w-full rounded-control border border-border bg-white px-4 h-11 text-sm text-charcoal"
+                  error={errors.requestedTime?.message}
                 >
                   <option value="">Select a time</option>
                   {timeSlots.map((slot) => (
@@ -240,7 +240,7 @@ export function CheckoutForm() {
                       {slot}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <FieldError>{errors.requestedTime?.message}</FieldError>
               </div>
             </div>

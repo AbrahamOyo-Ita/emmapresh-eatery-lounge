@@ -25,7 +25,10 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  React.useEffect(() => setMobileOpen(false), [pathname]);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setMobileOpen(false));
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
 
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
@@ -41,15 +44,15 @@ export function Header() {
       </a>
       <header
         className={cn(
-          "sticky top-0 z-40 w-full border-b border-transparent bg-cream/95 backdrop-blur transition-all",
+          "sticky top-0 z-40 w-full border-b border-transparent bg-white/95 backdrop-blur transition-all",
           scrolled && "border-border shadow-[var(--shadow-soft)]"
         )}
       >
-        <div className={cn("mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all sm:px-6", scrolled ? "h-16" : "h-20")}>
+        <div className={cn("mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 transition-all sm:px-6", scrolled ? "h-14" : "h-16")}>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="focus-ring flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 lg:hidden"
+              className="focus-ring flex h-9 w-9 items-center justify-center rounded-control hover:bg-black/5 lg:hidden"
               aria-label="Open menu"
             >
               <MenuIcon className="h-5 w-5" aria-hidden="true" />
@@ -62,7 +65,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="focus-ring text-sm font-semibold text-charcoal/80 transition-colors hover:text-primary"
+                className="focus-ring text-xs font-semibold text-charcoal/80 transition-colors hover:text-primary"
               >
                 {link.label}
               </Link>
@@ -75,21 +78,21 @@ export function Header() {
             </div>
             <Link
               href="/search"
-              className="focus-ring hidden h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 sm:flex"
+              className="focus-ring hidden h-9 w-9 items-center justify-center rounded-control hover:bg-black/5 sm:flex"
               aria-label="Search"
             >
               <Search className="h-5 w-5" aria-hidden="true" />
             </Link>
             <Link
               href="/account"
-              className="focus-ring hidden h-10 w-10 items-center justify-center rounded-full hover:bg-black/5 sm:flex"
+              className="focus-ring hidden h-9 w-9 items-center justify-center rounded-control hover:bg-black/5 sm:flex"
               aria-label="Account"
             >
               <User className="h-5 w-5" aria-hidden="true" />
             </Link>
             <button
               onClick={() => setCartOpen(true)}
-              className="focus-ring relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-black/5"
+              className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-control hover:bg-black/5"
               aria-label={`Cart, ${itemCount} items`}
             >
               <ShoppingBag className="h-5 w-5" aria-hidden="true" />
@@ -116,7 +119,7 @@ export function Header() {
               <Logo />
               <button
                 onClick={() => setMobileOpen(false)}
-                className="focus-ring flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5"
+                className="focus-ring flex h-9 w-9 items-center justify-center rounded-control hover:bg-black/5"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -130,15 +133,15 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="focus-ring rounded-xl px-3 py-3 text-sm font-semibold text-charcoal hover:bg-cream-soft"
+                  className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft"
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link href="/account" className="focus-ring rounded-xl px-3 py-3 text-sm font-semibold text-charcoal hover:bg-cream-soft">
+              <Link href="/account" className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft">
                 Account
               </Link>
-              <Link href="/contact" className="focus-ring rounded-xl px-3 py-3 text-sm font-semibold text-charcoal hover:bg-cream-soft">
+              <Link href="/contact" className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft">
                 Contact
               </Link>
             </nav>

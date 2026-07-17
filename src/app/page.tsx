@@ -21,6 +21,7 @@ export default async function HomePage() {
       <JunkFoodStrip />
 
       <FeatureSection
+        tone="red"
         eyebrow="Busy Professionals"
         title="Meals by Litre & Weekly Plans"
         description="Soups, stews, rice and proteins portioned by the litre — perfect for professionals and families who don't have time to cook. Choose a one-off order or a recurring weekly plan."
@@ -36,7 +37,7 @@ export default async function HomePage() {
       />
 
       <FeatureSection
-        tone="cream"
+        tone="white"
         imageSide="left"
         eyebrow="Events & Gatherings"
         title="Indoor & Outdoor Catering"
@@ -53,6 +54,7 @@ export default async function HomePage() {
       />
 
       <FeatureSection
+        tone="red"
         eyebrow="Bakery"
         title="Cakes & Custom Designs"
         description="Browse ready-made cakes in stock or request a fully custom cake — upload a reference image and our bakery team will quote and design it for you."
@@ -68,7 +70,7 @@ export default async function HomePage() {
       />
 
       <FeatureSection
-        tone="cream"
+        tone="white"
         imageSide="left"
         eyebrow="Academy"
         title="Cooking & Baking Academy"
@@ -85,6 +87,7 @@ export default async function HomePage() {
       />
 
       <FeatureSection
+        tone="red"
         eyebrow="Event Halls"
         title="Book an Event Hall"
         description="Elegant, well-equipped event spaces for weddings, conferences and private celebrations — complete with catering, drinks and decoration support."

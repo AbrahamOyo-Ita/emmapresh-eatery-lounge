@@ -23,19 +23,19 @@ const services = [
 
 export function QuickServices() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+    <section className="motion-section bg-primary py-10">
+      <div className="motion-grid mx-auto grid max-w-7xl grid-cols-2 gap-2 px-4 sm:grid-cols-4 sm:gap-3 sm:px-6">
         {services.map((service) => (
           <Link
             key={service.href}
             href={service.href}
-            className="focus-ring group flex flex-col items-start gap-3 rounded-card border border-border/60 bg-white p-5 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-[var(--shadow-lift)]"
+            className="focus-ring group flex flex-col items-start gap-3 rounded-card border border-white/15 bg-white/95 p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-white"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-control bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
               <service.icon className="h-5 w-5" aria-hidden="true" />
             </span>
             <div>
-              <p className="font-display text-sm text-charcoal">{service.label}</p>
+              <p className="font-display text-sm font-semibold text-charcoal">{service.label}</p>
               <p className="mt-0.5 text-xs text-body">{service.description}</p>
             </div>
           </Link>

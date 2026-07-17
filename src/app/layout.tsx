@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { displayFont, bodyFont } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Header } from "@/components/layout/header";
-import { AnnouncementBar } from "@/components/home/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { BranchWelcomeModal } from "@/components/layout/branch-welcome-modal";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
@@ -69,10 +68,9 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-cream text-charcoal">
+      <body className="min-h-full flex flex-col bg-white text-charcoal">
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={restaurantJsonLd} />
-        <AnnouncementBar />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
