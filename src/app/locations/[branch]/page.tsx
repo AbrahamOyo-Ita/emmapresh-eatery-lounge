@@ -7,6 +7,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { getBranchBySlug } from "@/services/branch-service";
 import { branches } from "@/data/branches";
 import { cn } from "@/lib/utils";
+import { JsonLd } from "@/components/seo/json-ld";
+import { siteConfig } from "@/config/site";
 
 interface PageProps {
   params: Promise<{ branch: string }>;
@@ -21,8 +23,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const branch = await getBranchBySlug(slug);
   if (!branch) return {};
   return {
-    title: `${branch.name} — Restaurant, Catering & Events in ${branch.city}`,
-    description: `Visit EmmaPresh ${branch.city}: ${branch.address}. Opening hours, menu, catering, bakery and event hall availability.`,
+    title: `Restaurant & Lounge in ${branch.city} | Nigerian Food & Catering`,
+    description: `${branch.name} at ${branch.address}. Order Nigerian food, cakes and drinks, book catering${branch.hasEventHall ? ", an event hall" : ""}, or reserve a table in ${branch.city}.`,
+    alternates: { canonical: `/locations/${branch.slug}` },
+    openGraph: {
+      title: `${branch.name} | Restaurant in ${branch.city}`,
+      description: `Nigerian food, catering, cakes and lounge services at ${branch.address}.`,
+      url: `/locations/${branch.slug}`,
+      type: "website",
+      images: [{ url: branch.image, alt: `${branch.name} location` }],
+    },
   };
 }
 
@@ -31,14 +41,53 @@ export default async function BranchDetailPage({ params }: PageProps) {
   const branch = await getBranchBySlug(slug);
   if (!branch) notFound();
 
+  const branchJsonLd = {
+    "@context": "https://schema.org",
+    "@type": ["Restaurant", "LocalBusiness"],
+    "@id": `${siteConfig.url}/locations/${branch.slug}#restaurant`,
+    name: branch.name,
+    url: `${siteConfig.url}/locations/${branch.slug}`,
+    image: `${siteConfig.url}${branch.image}`,
+    telephone: branch.phone,
+    email: branch.email,
+    priceRange: "₦₦",
+    servesCuisine: ["Nigerian", "African", "Continental"],
+    acceptsReservations: true,
+    hasMenu: `${siteConfig.url}/menu?branch=${branch.slug}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: branch.address,
+      addressLocality: branch.city,
+      addressRegion: branch.state,
+      addressCountry: "NG",
+    },
+    openingHoursSpecification: branch.openingHours.map((hours) => ({
+      "@type": "OpeningHoursSpecification",
+      description: `${hours.days}: ${hours.hours}`,
+    })),
+    parentOrganization: { "@id": `${siteConfig.url}/#organization` },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+      { "@type": "ListItem", position: 2, name: "Locations", item: `${siteConfig.url}/locations` },
+      { "@type": "ListItem", position: 3, name: branch.city, item: `${siteConfig.url}/locations/${branch.slug}` },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+      <JsonLd data={branchJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <nav aria-label="Breadcrumb" className="mb-6 text-xs text-body">
         <Link href="/locations" className="hover:text-primary">Locations</Link> <span aria-hidden="true">/</span>{" "}
         <span className="text-charcoal">{branch.city}</span>
       </nav>
 
-      <FoodImage name={branch.name} icon="hall" className="h-64 w-full rounded-card" iconClassName="h-16 w-16" />
+      <FoodImage name={branch.name} src={branch.image} icon="hall" className="h-64 w-full rounded-card" iconClassName="h-16 w-16" />
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
@@ -46,6 +95,11 @@ export default async function BranchDetailPage({ params }: PageProps) {
           <p className="mt-2 flex items-start gap-2 text-sm text-body">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {branch.address}, {branch.state}
+          </p>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-body">
+            Visit {branch.name} for freshly prepared Nigerian meals, rice dishes, soups, grills, pastries and drinks
+            in {branch.city}. Order for delivery or pickup, reserve a table, or speak with our team about catering
+            {branch.hasEventHall ? " and event-hall bookings" : ""} in {branch.city}.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">

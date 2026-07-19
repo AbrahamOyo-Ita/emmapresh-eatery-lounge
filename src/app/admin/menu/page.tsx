@@ -18,7 +18,10 @@ const statusStyles: Record<StockStatus, string> = {
 export default function AdminMenuPage() {
   const { overrides, setStatus, statusFor } = useMenuStatusStore();
   const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   function cycleStatus(itemId: string, current: StockStatus) {
     const idx = statusCycle.indexOf(current);

@@ -31,7 +31,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
           <ul className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
             {items.map((item) => (
               <li key={item.cartItemId} className="flex gap-3 rounded-2xl border border-border/70 p-3">
-                <FoodImage name={item.name} className="h-16 w-16 shrink-0 rounded-xl" />
+                <FoodImage name={item.name} src={item.image} className="h-16 w-16 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between gap-2">
                     <p className="truncate text-sm font-semibold text-charcoal">{item.name}</p>

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   UtensilsCrossed,
   Pizza,
@@ -15,6 +17,7 @@ import {
   GraduationCap,
   Building2,
 } from "lucide-react";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const GRADIENTS = [
@@ -56,12 +59,14 @@ function hashSeed(seed: string) {
 
 interface FoodImageProps {
   name: string;
+  src?: string;
   icon?: FoodIconKey;
   className?: string;
   iconClassName?: string;
 }
 
-export function FoodImage({ name, icon = "default", className, iconClassName }: FoodImageProps) {
+export function FoodImage({ name, src, icon = "default", className, iconClassName }: FoodImageProps) {
+  const [failed, setFailed] = React.useState(false);
   const gradient = GRADIENTS[hashSeed(name) % GRADIENTS.length];
   const Icon = ICONS[icon];
 
@@ -75,15 +80,26 @@ export function FoodImage({ name, icon = "default", className, iconClassName }: 
       role="img"
       aria-label={name}
     >
+      {src && !failed && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          onError={() => setFailed(true)}
+          aria-hidden="true"
+        />
+      )}
+      {src && !failed && <div className="absolute inset-0 bg-gradient-to-t from-charcoal/35 via-charcoal/5 to-transparent" aria-hidden="true" />}
       <div
-        className="absolute inset-0 opacity-10"
+        className={cn("absolute inset-0 opacity-10", src && !failed && "hidden")}
         style={{
           backgroundImage:
             "radial-gradient(circle at 20% 20%, white 0%, transparent 35%), radial-gradient(circle at 80% 70%, white 0%, transparent 30%)",
         }}
         aria-hidden="true"
       />
-      <Icon className={cn("food-image-icon relative h-10 w-10 text-white/90", iconClassName)} strokeWidth={1.5} aria-hidden="true" />
+      {(!src || failed) && <Icon className={cn("food-image-icon relative h-10 w-10 text-white/90", iconClassName)} strokeWidth={1.5} aria-hidden="true" />}
     </div>
   );
 }

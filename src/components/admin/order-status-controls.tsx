@@ -9,6 +9,7 @@ function getNextActions(order: Order): { label: string; status: OrderStatus; var
   const actions: { label: string; status: OrderStatus; variant?: "primary" | "outline" }[] = [];
 
   switch (status) {
+    case "order-created":
     case "payment-verified":
       actions.push({ label: "Accept Order", status: "order-accepted" });
       break;

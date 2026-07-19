@@ -26,23 +26,9 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-  const isAdminRoute = pathname.startsWith("/admin");
-  const isLoginRoute = pathname === "/admin/login";
-
-  if (isAdminRoute && !isLoginRoute && !user) {
-    const redirectUrl = new URL("/admin/login", request.url);
-    redirectUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (isLoginRoute && user) {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
+  // Demo mode: keep admin routes open until production auth is re-enabled.
 
   return response;
 }

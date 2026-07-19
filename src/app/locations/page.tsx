@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { branches } from "@/data/branches";
 
 export const metadata: Metadata = {
-  title: "Our Locations",
+  title: "Restaurant Locations in Abuja, Lagos & Badagry",
   description: "Find EmmaPresh Eatery & Lounge in Abuja, Lagos and Badagry — addresses, opening hours and contact details.",
+  alternates: { canonical: "/locations" },
 };
 
 export default function LocationsPage() {
@@ -24,7 +25,7 @@ export default function LocationsPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {branches.map((branch) => (
           <div key={branch.slug} className="overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)]">
-            <FoodImage name={branch.name} icon="hall" className="h-44 w-full" />
+            <FoodImage name={branch.name} src={branch.image} icon="hall" className="h-44 w-full" />
             <div className="p-5">
               <h2 className="font-display text-lg text-charcoal">{branch.name}</h2>
               <p className="mt-2 flex items-start gap-1.5 text-xs text-body">

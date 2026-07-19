@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { PartyPopper } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { PaymentStatusBadge } from "@/components/ui/status-badge";
+import { OrderStatusBadge, PaymentStatusBadge } from "@/components/ui/status-badge";
 import { useOrdersStore } from "@/stores/orders-store";
 import { branches } from "@/data/branches";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -16,7 +16,10 @@ function OrderConfirmationContent() {
   const orders = useOrdersStore((s) => s.orders);
   const [hydrated, setHydrated] = React.useState(false);
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const order = orders.find((o) => o.reference === reference);
 
@@ -35,6 +38,7 @@ function OrderConfirmationContent() {
   }
 
   const branch = branches.find((b) => b.slug === order.branchSlug)!;
+  const pendingReview = order.status === "order-created";
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6">
@@ -42,15 +46,23 @@ function OrderConfirmationContent() {
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
           <PartyPopper className="h-8 w-8 text-success" aria-hidden="true" />
         </span>
-        <h1 className="mt-4 font-display text-3xl text-charcoal">Order Confirmed!</h1>
+        <h1 className="mt-4 font-display text-3xl text-charcoal">
+          {pendingReview ? "Order Submitted!" : "Order Confirmed!"}
+        </h1>
         <p className="mt-2 text-sm text-body">
-          Thank you for ordering from {branch.name}. Your order reference is below — keep it handy for tracking.
+          {pendingReview
+            ? `Thank you for ordering from ${branch.name}. Our team is reviewing your order and will confirm it shortly — keep your reference handy for tracking.`
+            : `Thank you for ordering from ${branch.name}. Your order reference is below — keep it handy for tracking.`}
         </p>
         <p className="mt-3 font-display text-xl text-primary">{order.reference}</p>
       </div>
 
       <div className="mt-8 rounded-card border border-border/60 bg-white p-6">
         <div className="flex items-center justify-between border-b border-border pb-4">
+          <span className="text-sm text-body">Order Status</span>
+          <OrderStatusBadge status={order.status} />
+        </div>
+        <div className="flex items-center justify-between border-b border-border py-4">
           <span className="text-sm text-body">Payment Status</span>
           <PaymentStatusBadge status={order.payment.status} />
         </div>

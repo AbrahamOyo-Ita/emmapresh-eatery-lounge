@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { OrderStatusBadge, PaymentStatusBadge } from "@/components/ui/status-badge";
 import { Input, Select } from "@/components/ui/input";
@@ -10,14 +11,20 @@ import { branches } from "@/data/branches";
 import { formatCurrency } from "@/lib/utils";
 import type { OrderStatus, BranchSlug } from "@/types";
 
-export default function AdminOrdersPage() {
+function AdminOrdersContent() {
+  const searchParams = useSearchParams();
   const orders = useOrdersStore((s) => s.orders);
   const [hydrated, setHydrated] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [branchFilter, setBranchFilter] = React.useState<BranchSlug | "all">("all");
-  const [statusFilter, setStatusFilter] = React.useState<OrderStatus | "all">("all");
+  const [statusFilter, setStatusFilter] = React.useState<OrderStatus | "all">(
+    (searchParams.get("status") as OrderStatus | null) ?? "all"
+  );
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const filtered = orders
     .filter((o) => (branchFilter === "all" ? true : o.branchSlug === branchFilter))
@@ -57,6 +64,7 @@ export default function AdminOrdersPage() {
           <option value="all">All Statuses</option>
           {(
             [
+              "order-created",
               "awaiting-payment",
               "payment-submitted",
               "payment-under-review",
@@ -120,5 +128,13 @@ export default function AdminOrdersPage() {
         </table>
       </div>
     </div>
+  );
+}
+
+export default function AdminOrdersPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <AdminOrdersContent />
+    </React.Suspense>
   );
 }

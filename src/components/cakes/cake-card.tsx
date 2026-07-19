@@ -34,7 +34,7 @@ export function CakeCard({ cake }: { cake: Cake }) {
     <div className="group overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1">
       <Link href={`/cakes/${cake.slug}`}>
         <div className="relative">
-          <FoodImage name={cake.name} icon="cake" className="h-40 w-full" />
+          <FoodImage name={cake.name} src={cake.image} icon="cake" className="h-40 w-full" />
           {cake.sameDayPickup && (
             <span className="absolute left-2.5 top-2.5">
               <Badge variant="accent">Same-Day Pickup</Badge>

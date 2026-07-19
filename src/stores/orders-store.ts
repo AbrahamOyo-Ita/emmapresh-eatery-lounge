@@ -4,6 +4,7 @@ import type { CartItem, FulfilmentMethod, Order, OrderStatus, PaymentMethod, Bra
 import { seedOrders } from "@/data/orders-seed";
 import { generateOrderReference } from "@/lib/utils";
 import { branches } from "@/data/branches";
+import { patchEntity, persistEntity } from "@/lib/backend-client";
 
 /**
  * This store is the in-memory + localStorage-persisted "database" for orders.
@@ -30,6 +31,7 @@ interface CreateOrderInput {
 
 interface OrdersState {
   orders: Order[];
+  setOrders: (orders: Order[]) => void;
   createOrder: (input: CreateOrderInput) => Order;
   getOrderByReference: (reference: string) => Order | undefined;
   submitReceipt: (reference: string, receipt: NonNullable<Order["payment"]["receipt"]>) => void;
@@ -55,6 +57,7 @@ export const useOrdersStore = create<OrdersState>()(
   persist(
     (set, get) => ({
       orders: seedOrders,
+      setOrders: (orders) => set({ orders }),
       createOrder: (input) => {
         const now = new Date().toISOString();
         const branch = branches.find((b) => b.slug === input.branchSlug);
@@ -76,13 +79,14 @@ export const useOrdersStore = create<OrdersState>()(
             status: input.paymentMethod === "bank-transfer" ? "awaiting-payment" : "payment-verified",
             amountExpected: input.total,
           },
-          status: input.paymentMethod === "bank-transfer" ? "awaiting-payment" : "order-accepted",
+          status: input.paymentMethod === "bank-transfer" ? "awaiting-payment" : "order-created",
           statusHistory: [{ status: "order-created", timestamp: now }],
           createdAt: now,
           updatedAt: now,
         };
         void branch;
         set({ orders: [order, ...get().orders] });
+        persistEntity("orders", order);
         return order;
       },
       getOrderByReference: (reference) => get().orders.find((o) => o.reference === reference),
@@ -97,6 +101,7 @@ export const useOrdersStore = create<OrdersState>()(
             };
           }),
         });
+        patchEntity("orders", reference, { status: "payment-submitted", payment: get().getOrderByReference(reference)?.payment });
       },
       verifyPayment: (reference, approve, verification) => {
         set({
@@ -116,12 +121,21 @@ export const useOrdersStore = create<OrdersState>()(
             };
           }),
         });
+        patchEntity("orders", reference, {
+          status: get().getOrderByReference(reference)?.status,
+          payment: get().getOrderByReference(reference)?.payment,
+          statusHistory: get().getOrderByReference(reference)?.statusHistory,
+        });
       },
       updateOrderStatus: (reference, status, note) => {
         set({
           orders: get().orders.map((order) =>
             order.reference === reference ? pushStatus(order, status, note) : order
           ),
+        });
+        patchEntity("orders", reference, {
+          status,
+          statusHistory: get().getOrderByReference(reference)?.statusHistory,
         });
       },
       setInternalNotes: (reference, notes) => {
@@ -130,6 +144,7 @@ export const useOrdersStore = create<OrdersState>()(
             order.reference === reference ? { ...order, internalNotes: notes, updatedAt: new Date().toISOString() } : order
           ),
         });
+        patchEntity("orders", reference, { internalNotes: notes });
       },
     }),
     { name: "emmapresh-orders" }

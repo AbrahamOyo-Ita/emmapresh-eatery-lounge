@@ -19,7 +19,10 @@ export default function OrderTrackingPage() {
   const [hydrated, setHydrated] = React.useState(false);
   const [repeated, setRepeated] = React.useState(false);
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const order = orders.find((o) => o.reference === params.reference);
 

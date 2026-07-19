@@ -32,7 +32,7 @@ export default async function HallDetailPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-      <FoodImage name={hall.name} icon="hall" className="h-64 w-full rounded-card" iconClassName="h-16 w-16" />
+      <FoodImage name={hall.name} src={hall.image} icon="hall" className="h-64 w-full rounded-card" iconClassName="h-16 w-16" />
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
           <h1 className="font-display text-3xl text-charcoal">{hall.name}</h1>

@@ -25,7 +25,7 @@ export default function GalleryPage() {
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
         {galleryImages.map((image) => (
-          <FoodImage key={image.id} name={image.alt} icon={categoryIcon[image.category]} className="aspect-square w-full rounded-2xl" />
+          <FoodImage key={image.id} name={image.alt} src={image.src} icon={categoryIcon[image.category]} className="aspect-square w-full rounded-2xl" />
         ))}
       </div>
     </div>

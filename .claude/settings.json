@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"$\\(npm root -g\\)/@openai/codex/node_modules\")",
+      "Bash(node -e \"console.log\\(JSON.stringify\\(require\\('$\\(npm root -g\\)/@openai/codex/package.json'\\).optionalDependencies, null, 2\\)\\)\")",
+      "Bash(ls \"$\\(npm root -g\\)/@openai/codex/node_modules/@openai\")",
+      "Bash(codex --version)",
+      "Bash(npm approve-scripts *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(supabase --version)",
+      "Bash(node gen_seed.mjs)"
+    ]
+  }
+}

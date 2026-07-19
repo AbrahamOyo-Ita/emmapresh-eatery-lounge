@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/input";
 import { Dialog } from "@/components/ui/dialog";
 import { useCartStore } from "@/stores/cart-store";
 import { useBranchStore } from "@/stores/branch-store";
-import { priceForBranch } from "@/services/menu-service";
+import { priceForBranch } from "@/services/pricing";
 import { formatCurrency, cn } from "@/lib/utils";
 import type { MenuItem } from "@/types";
 

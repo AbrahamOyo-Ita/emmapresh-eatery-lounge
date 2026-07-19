@@ -16,7 +16,10 @@ interface DialogProps {
 
 export function Dialog({ open, onClose, title, children, widthClassName = "max-w-lg" }: DialogProps) {
   const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setMounted(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   React.useEffect(() => {
     if (!open) return;
@@ -39,7 +42,7 @@ export function Dialog({ open, onClose, title, children, widthClassName = "max-w
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-charcoal/50"
+            className="absolute inset-0 bg-charcoal/45 backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -52,12 +55,12 @@ export function Dialog({ open, onClose, title, children, widthClassName = "max-w
             aria-modal="true"
             aria-label={title}
             className={cn(
-              "relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-card bg-white shadow-2xl",
+              "relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-card border border-white/40 bg-white/60 shadow-2xl backdrop-blur-2xl",
               widthClassName
             )}
           >
             {title && (
-              <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <div className="flex items-center justify-between border-b border-white/50 bg-white/20 px-5 py-4">
                 <h2 className="font-display text-lg">{title}</h2>
                 <button onClick={onClose} aria-label="Close" className="focus-ring rounded-full p-2 hover:bg-black/5">
                   <X className="h-5 w-5" />

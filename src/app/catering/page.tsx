@@ -33,7 +33,7 @@ export default function CateringPage() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {cateringPackages.map((pkg) => (
             <div key={pkg.id} className="overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)]">
-              <FoodImage name={pkg.name} icon="event" className="h-36 w-full" />
+              <FoodImage name={pkg.name} src={pkg.image} icon="event" className="h-36 w-full" />
               <div className="p-5">
                 <h3 className="font-display text-base text-charcoal">{pkg.name}</h3>
                 <p className="mt-1.5 text-xs text-body">{pkg.description}</p>

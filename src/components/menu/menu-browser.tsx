@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useBranchStore } from "@/stores/branch-store";
-import { priceForBranch } from "@/services/menu-service";
+import { priceForBranch } from "@/services/pricing";
 import type { MenuCategory, MenuItem, DietaryLabel } from "@/types";
 import { cn } from "@/lib/utils";
 

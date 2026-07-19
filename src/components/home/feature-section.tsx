@@ -13,6 +13,7 @@ interface FeatureSectionProps {
   cta: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
   icon: FoodIconKey;
+  image?: string;
   imageSide?: "left" | "right";
   tone?: "cream" | "white" | "red";
 }
@@ -25,6 +26,7 @@ export function FeatureSection({
   cta,
   secondaryCta,
   icon,
+  image,
   imageSide = "right",
   tone = "white",
 }: FeatureSectionProps) {
@@ -59,7 +61,7 @@ export function FeatureSection({
             )}
           </div>
         </div>
-        <FoodImage name={title} icon={icon} className="aspect-[4/3] w-full rounded-card" iconClassName="h-14 w-14" />
+        <FoodImage name={title} src={image} icon={icon} className="aspect-[4/3] w-full rounded-card" iconClassName="h-14 w-14" />
       </div>
     </section>
   );

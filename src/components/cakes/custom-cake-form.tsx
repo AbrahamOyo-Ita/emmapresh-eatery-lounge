@@ -15,8 +15,9 @@ const MAX_IMAGES = 4;
 
 export function CustomCakeForm() {
   const createRequest = useCakeRequestsStore((s) => s.createRequest);
+  const setReferenceImages = useCakeRequestsStore((s) => s.setReferenceImages);
   const branchSlug = useBranchStore((s) => s.selectedBranch) ?? "lagos";
-  const [images, setImages] = React.useState<string[]>([]);
+  const [images, setImages] = React.useState<{ preview: string; file: File }[]>([]);
   const [submitted, setSubmitted] = React.useState<string | null>(null);
 
   const {
@@ -39,13 +40,36 @@ export function CustomCakeForm() {
       .forEach((file) => {
         if (file.size > 5 * 1024 * 1024) return;
         const reader = new FileReader();
-        reader.onload = () => setImages((prev) => [...prev, reader.result as string]);
+        reader.onload = () => setImages((prev) => [...prev, { preview: reader.result as string, file }]);
         reader.readAsDataURL(file);
       });
   }
 
-  function onSubmit(data: CustomCakeRequestFormValues) {
-    const request = createRequest({ ...data, branchSlug, referenceImages: images });
+  async function uploadReferenceImages(reference: string) {
+    const uploaded = await Promise.all(
+      images.map(async (image) => {
+        const formData = new FormData();
+        formData.append("kind", "cake-reference");
+        formData.append("reference", reference);
+        formData.append("file", image.file);
+        try {
+          const response = await fetch("/api/uploads", { method: "POST", body: formData });
+          const json = await response.json();
+          return json.url || json.path || image.preview;
+        } catch {
+          return image.preview;
+        }
+      })
+    );
+    return uploaded;
+  }
+
+  async function onSubmit(data: CustomCakeRequestFormValues) {
+    const request = createRequest({ ...data, branchSlug, referenceImages: [] });
+    const referenceImages = await uploadReferenceImages(request.reference);
+    if (referenceImages.length > 0) {
+      setReferenceImages(request.id, referenceImages);
+    }
     setSubmitted(request.reference);
   }
 
@@ -178,10 +202,10 @@ export function CustomCakeForm() {
       <div>
         <Label>Reference Images (optional, up to 4)</Label>
         <div className="flex flex-wrap gap-3">
-          {images.map((src, i) => (
+          {images.map((image, i) => (
             <div key={i} className="relative h-20 w-20">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`Reference ${i + 1}`} className="h-20 w-20 rounded-xl object-cover" />
+              <img src={image.preview} alt={`Reference ${i + 1}`} className="h-20 w-20 rounded-xl object-cover" />
               <button
                 type="button"
                 onClick={() => setImages((prev) => prev.filter((_, idx) => idx !== i))}

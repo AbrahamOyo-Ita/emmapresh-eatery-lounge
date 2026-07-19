@@ -4,9 +4,10 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Bike, Store, UtensilsCrossed, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bike, Store, UtensilsCrossed, Check, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Input, Label, FieldError, Textarea, Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { BranchSelector } from "@/components/layout/branch-selector";
 import { checkoutSchema, type CheckoutFormValues } from "@/schemas/checkout";
 import { useCartStore } from "@/stores/cart-store";
@@ -31,6 +32,7 @@ export function CheckoutForm() {
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const [submitting, setSubmitting] = React.useState(false);
+  const [successOrder, setSuccessOrder] = React.useState<{ reference: string; paymentMethod: PaymentMethod } | null>(null);
 
   const {
     register,
@@ -101,14 +103,20 @@ export function CheckoutForm() {
     });
     clearCart();
     setCustomerSession(data.customer);
-    if (data.paymentMethod === "bank-transfer") {
-      router.push(`/payment/${order.reference}`);
+    setSuccessOrder({ reference: order.reference, paymentMethod: data.paymentMethod });
+    setSubmitting(false);
+  }
+
+  function continueAfterSuccess() {
+    if (!successOrder) return;
+    if (successOrder.paymentMethod === "bank-transfer") {
+      router.push(`/payment/${successOrder.reference}`);
     } else {
-      router.push(`/order-confirmation?ref=${order.reference}`);
+      router.push(`/order-confirmation?ref=${successOrder.reference}`);
     }
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !successOrder) {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center">
         <p className="font-display text-2xl text-charcoal">Your cart is empty</p>
@@ -119,6 +127,32 @@ export function CheckoutForm() {
 
   return (
     <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_340px]">
+      <Dialog open={!!successOrder} onClose={() => {}} widthClassName="max-w-md">
+        <div className="p-6 text-center">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success/10 text-success">
+            <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
+          </span>
+          <h2 className="mt-4 font-display text-xl text-charcoal">Order Placed Successfully</h2>
+          <p className="mt-2 text-sm leading-6 text-body">
+            Your order has been received. We will confirm your order and keep you updated as our team reviews the
+            details.
+          </p>
+          {successOrder && (
+            <div className="mt-4 rounded-xl bg-cream-soft px-4 py-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-body">Order Reference</p>
+              <p className="mt-1 font-display text-lg text-primary">{successOrder.reference}</p>
+            </div>
+          )}
+          <p className="mt-4 text-xs text-body">
+            {successOrder?.paymentMethod === "bank-transfer"
+              ? "Next, upload your transfer receipt so finance can verify the payment."
+              : "You can now view your confirmation and track the order status."}
+          </p>
+          <Button className="mt-5 w-full" size="lg" onClick={continueAfterSuccess}>
+            {successOrder?.paymentMethod === "bank-transfer" ? "Continue to Payment" : "View Confirmation"}
+          </Button>
+        </div>
+      </Dialog>
       <div>
         <ol className="mb-8 flex flex-wrap items-center gap-2" aria-label="Checkout steps">
           {steps.map((step, i) => (

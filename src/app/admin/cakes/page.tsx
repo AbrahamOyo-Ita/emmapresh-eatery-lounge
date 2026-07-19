@@ -18,7 +18,10 @@ export default function AdminCakesPage() {
   const { requests, updateStatus, setQuote } = useCakeRequestsStore();
   const [hydrated, setHydrated] = React.useState(false);
   const [quoteDrafts, setQuoteDrafts] = React.useState<Record<string, string>>({});
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
   if (!hydrated) return null;
 
   return (

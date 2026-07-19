@@ -35,7 +35,7 @@ export default function CartPage() {
         <ul className="space-y-4">
           {items.map((item) => (
             <li key={item.cartItemId} className="flex gap-4 rounded-card border border-border/60 bg-white p-4">
-              <FoodImage name={item.name} className="h-24 w-24 shrink-0 rounded-2xl" />
+              <FoodImage name={item.name} src={item.image} className="h-24 w-24 shrink-0 rounded-2xl" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <div>

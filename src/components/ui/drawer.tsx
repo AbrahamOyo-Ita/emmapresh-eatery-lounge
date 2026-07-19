@@ -18,7 +18,10 @@ interface DrawerProps {
 export function Drawer({ open, onClose, side = "right", title, children, widthClassName = "max-w-md" }: DrawerProps) {
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => setMounted(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setMounted(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   React.useEffect(() => {
     if (!open) return;

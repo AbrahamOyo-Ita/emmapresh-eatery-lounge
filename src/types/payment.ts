@@ -13,7 +13,9 @@ export interface PaymentReceipt {
   fileName: string;
   fileType: string;
   fileSizeBytes: number;
-  dataUrl: string;
+  dataUrl?: string;
+  url?: string;
+  storagePath?: string;
   uploadedAt: string;
 }
 

@@ -4,7 +4,7 @@ import * as React from "react";
 import { FoodImage } from "@/components/ui/food-image";
 import { useCartStore } from "@/stores/cart-store";
 import { useBranchStore } from "@/stores/branch-store";
-import { priceForBranch } from "@/services/menu-service";
+import { priceForBranch } from "@/services/pricing";
 import { iconForCategory } from "@/lib/food-icon";
 import { formatCurrency, cn } from "@/lib/utils";
 import type { MenuItem } from "@/types";
@@ -43,7 +43,7 @@ export function LitreMealCard({ item }: { item: MenuItem }) {
 
   return (
     <div className="overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)]">
-      <FoodImage name={item.name} icon={iconForCategory(item.categorySlug)} className="h-36 w-full" />
+      <FoodImage name={item.name} src={item.image} icon={iconForCategory(item.categorySlug)} className="h-36 w-full" />
       <div className="p-4">
         <h3 className="font-display text-sm text-charcoal">{item.name}</h3>
         <p className="mt-1 line-clamp-2 text-xs text-body">{item.description}</p>

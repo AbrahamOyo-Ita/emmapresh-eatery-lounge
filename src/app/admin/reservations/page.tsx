@@ -11,7 +11,10 @@ const statuses: ReservationStatus[] = ["pending", "confirmed", "cancelled", "com
 export default function AdminReservationsPage() {
   const { reservations, updateStatus } = useReservationsStore();
   const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
   if (!hydrated) return null;
 
   return (

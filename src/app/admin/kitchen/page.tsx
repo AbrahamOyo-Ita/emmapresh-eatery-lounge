@@ -14,9 +14,19 @@ const columns: { title: string; statuses: OrderStatus[]; nextStatus?: OrderStatu
   { title: "Completed", statuses: ["completed", "delivered"] },
 ];
 
-function KitchenCard({ order, nextStatus, nextLabel }: { order: Order; nextStatus?: OrderStatus; nextLabel?: string }) {
+function KitchenCard({
+  order,
+  now,
+  nextStatus,
+  nextLabel,
+}: {
+  order: Order;
+  now: number;
+  nextStatus?: OrderStatus;
+  nextLabel?: string;
+}) {
   const updateOrderStatus = useOrdersStore((s) => s.updateOrderStatus);
-  const minutesAgo = Math.round((Date.now() - new Date(order.createdAt).getTime()) / 60000);
+  const minutesAgo = Math.max(0, Math.round((now - new Date(order.createdAt).getTime()) / 60000));
 
   return (
     <div className="rounded-2xl border border-border/60 bg-white p-4">
@@ -60,7 +70,19 @@ function KitchenCard({ order, nextStatus, nextLabel }: { order: Order; nextStatu
 export default function KitchenBoardPage() {
   const orders = useOrdersStore((s) => s.orders);
   const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => setHydrated(true), []);
+  const [now, setNow] = React.useState(0);
+
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setHydrated(true);
+      setNow(Date.now());
+    });
+    const interval = window.setInterval(() => setNow(Date.now()), 60000);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearInterval(interval);
+    };
+  }, []);
   if (!hydrated) return null;
 
   return (
@@ -79,7 +101,7 @@ export default function KitchenBoardPage() {
               </div>
               <div className="space-y-3">
                 {columnOrders.map((order) => (
-                  <KitchenCard key={order.reference} order={order} nextStatus={col.nextStatus} nextLabel={col.nextLabel} />
+                  <KitchenCard key={order.reference} order={order} now={now} nextStatus={col.nextStatus} nextLabel={col.nextLabel} />
                 ))}
                 {columnOrders.length === 0 && <p className="px-2 py-6 text-center text-xs text-body">No orders</p>}
               </div>

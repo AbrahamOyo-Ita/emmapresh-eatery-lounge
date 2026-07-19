@@ -3,16 +3,16 @@
 import * as React from "react";
 import { UploadCloud, FileText, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 const MAX_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
 interface ReceiptUploadProps {
-  onSubmit: (file: { fileName: string; fileType: string; fileSizeBytes: number; dataUrl: string }) => Promise<void> | void;
+  reference: string;
+  onSubmit: (file: { fileName: string; fileType: string; fileSizeBytes: number; dataUrl?: string; url?: string; storagePath?: string }) => Promise<void> | void;
 }
 
-export function ReceiptUpload({ onSubmit }: ReceiptUploadProps) {
+export function ReceiptUpload({ reference, onSubmit }: ReceiptUploadProps) {
   const [file, setFile] = React.useState<File | null>(null);
   const [preview, setPreview] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -52,7 +52,20 @@ export function ReceiptUpload({ onSubmit }: ReceiptUploadProps) {
       setProgress((p) => Math.min(p + 20, 90));
     }, 150);
     try {
-      await onSubmit({ fileName: file.name, fileType: file.type, fileSizeBytes: file.size, dataUrl: preview });
+      const formData = new FormData();
+      formData.append("kind", "receipt");
+      formData.append("reference", reference);
+      formData.append("file", file);
+      const response = await fetch("/api/uploads", { method: "POST", body: formData });
+      const upload = await response.json().catch(() => null);
+      await onSubmit({
+        fileName: file.name,
+        fileType: file.type,
+        fileSizeBytes: file.size,
+        dataUrl: preview,
+        url: upload?.url,
+        storagePath: upload?.path,
+      });
       setProgress(100);
     } catch {
       setError("Upload failed. Please try again.");

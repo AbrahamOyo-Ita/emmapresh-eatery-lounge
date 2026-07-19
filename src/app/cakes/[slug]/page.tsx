@@ -30,7 +30,7 @@ export default async function CakeDetailPage({ params }: PageProps) {
   return (
     <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
       <div className="grid gap-10 lg:grid-cols-2">
-        <FoodImage name={cake.name} icon="cake" className="aspect-square w-full rounded-card" iconClassName="h-24 w-24" />
+        <FoodImage name={cake.name} src={cake.image} icon="cake" className="aspect-square w-full rounded-card" iconClassName="h-24 w-24" />
         <div>
           {cake.sameDayPickup && <Badge variant="accent">Same-Day Pickup</Badge>}
           <h1 className="mt-3 font-display text-3xl text-charcoal">{cake.name}</h1>

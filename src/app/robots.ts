@@ -4,8 +4,9 @@ import { siteConfig } from "@/config/site";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/admin", "/account", "/checkout", "/payment", "/cart"] },
+      { userAgent: "*", allow: "/", disallow: ["/admin/", "/account/", "/checkout", "/payment/", "/cart", "/search"] },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,
+    host: siteConfig.url,
   };
 }

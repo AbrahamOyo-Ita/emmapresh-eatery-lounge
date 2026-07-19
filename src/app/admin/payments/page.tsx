@@ -9,7 +9,10 @@ import { formatCurrency } from "@/lib/utils";
 export default function AdminPaymentsPage() {
   const orders = useOrdersStore((s) => s.orders);
   const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
   if (!hydrated) return null;
 
   const pending = orders

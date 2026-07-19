@@ -39,7 +39,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
-          <FoodImage name={item.name} icon={iconForCategory(item.categorySlug)} className="aspect-square w-full rounded-card" iconClassName="h-28 w-28" />
+          <FoodImage name={item.name} src={item.image} icon={iconForCategory(item.categorySlug)} className="aspect-square w-full rounded-card" iconClassName="h-28 w-28" />
         </div>
 
         <div>

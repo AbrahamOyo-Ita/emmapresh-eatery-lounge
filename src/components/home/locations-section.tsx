@@ -12,7 +12,7 @@ export function LocationsSection({ branches }: { branches: Branch[] }) {
       <div className="motion-grid grid gap-6 lg:grid-cols-3">
         {branches.map((branch) => (
           <div key={branch.slug} className="overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)]">
-            <FoodImage name={branch.name} icon="hall" className="h-32 w-full" />
+            <FoodImage name={branch.name} src={branch.image} icon="hall" className="h-32 w-full" />
             <div className="p-4">
               <h3 className="font-display text-base font-semibold text-charcoal">{branch.name}</h3>
               <p className="mt-2 flex items-start gap-1.5 text-xs text-body">

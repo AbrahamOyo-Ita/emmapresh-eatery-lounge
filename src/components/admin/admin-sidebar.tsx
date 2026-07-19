@@ -16,6 +16,8 @@ import {
   Megaphone,
   FileText,
   Settings,
+  PanelTop,
+  ContactRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +48,8 @@ const navGroups = [
   {
     label: "Management",
     items: [
+      { label: "CRM", href: "/admin/crm", icon: ContactRound },
+      { label: "CMS", href: "/admin/cms", icon: PanelTop },
       { label: "Customers", href: "/admin/customers", icon: Users },
       { label: "Promotions", href: "/admin/promotions", icon: Megaphone },
       { label: "Audit Logs", href: "/admin/audit-logs", icon: FileText },

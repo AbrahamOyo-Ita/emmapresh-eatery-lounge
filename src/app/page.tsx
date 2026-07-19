@@ -9,6 +9,20 @@ import { FaqSection } from "@/components/home/faq-section";
 import { GallerySection } from "@/components/home/gallery-section";
 import { getPopularItems } from "@/services/menu-service";
 import { getBranches } from "@/services/branch-service";
+import { siteConfig } from "@/config/site";
+
+export const metadata: Metadata = {
+  title: "Nigerian Restaurant, Catering, Cakes & Event Halls",
+  description:
+    "EmmaPresh Eatery & Lounge serves Nigerian food, drinks and cakes with catering, event halls and cooking classes in Abuja, Lagos and Badagry.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "EmmaPresh Eatery & Lounge | Abuja, Lagos & Badagry",
+    description: "Nigerian restaurant, catering, cakes, drinks, event halls and cooking academy across three locations.",
+    url: siteConfig.url,
+    images: [{ url: "/EmmaPresh Lagos.png", alt: "EmmaPresh Eatery & Lounge" }],
+  },
+};
 
 export default async function HomePage() {
   const [popularItems, branches] = await Promise.all([getPopularItems(), getBranches()]);
@@ -34,6 +48,7 @@ export default async function HomePage() {
         cta={{ label: "Order by Litre", href: "/litre-meals" }}
         secondaryCta={{ label: "View Meal Plans", href: "/meal-plans" }}
         icon="soup"
+        image="/food in litres copy.jpeg"
       />
 
       <FeatureSection
@@ -51,6 +66,7 @@ export default async function HomePage() {
         cta={{ label: "Request a Quote", href: "/catering/request-quote" }}
         secondaryCta={{ label: "See Packages", href: "/catering" }}
         icon="event"
+        image="/food in litres copy.jpeg"
       />
 
       <FeatureSection
@@ -67,6 +83,7 @@ export default async function HomePage() {
         cta={{ label: "Order a Cake", href: "/cakes" }}
         secondaryCta={{ label: "Custom Cake Request", href: "/cakes/custom-order" }}
         icon="cake"
+        image="/Cakes and desserts3.jpeg"
       />
 
       <FeatureSection
@@ -84,6 +101,7 @@ export default async function HomePage() {
         cta={{ label: "Explore Courses", href: "/academy" }}
         secondaryCta={{ label: "Apply Now", href: "/academy/apply" }}
         icon="academy"
+        image="/Cooking & Baking.png"
       />
 
       <FeatureSection
@@ -100,6 +118,7 @@ export default async function HomePage() {
         cta={{ label: "Request Availability", href: "/halls/request-booking" }}
         secondaryCta={{ label: "View Halls", href: "/halls" }}
         icon="hall"
+        image="/Event hall.jpeg"
       />
 
       <LocationsSection branches={branches} />
@@ -109,3 +128,4 @@ export default async function HomePage() {
     </>
   );
 }
+import type { Metadata } from "next";

@@ -5,14 +5,32 @@ import { useRouter } from "next/navigation";
 import { Bell, Menu as MenuIcon, LogOut } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useOrdersStore } from "@/stores/orders-store";
 
 export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
   const [email, setEmail] = React.useState<string | null>(null);
+  const [hydrated, setHydrated] = React.useState(false);
+  const pendingCount = useOrdersStore((s) => s.orders.filter((o) => o.status === "order-created").length);
 
   React.useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+  }, []);
+
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    // Orders placed in another tab (a customer checking out while this
+    // dashboard is open) land in localStorage but don't trigger this tab's
+    // Zustand state on their own — pick them up so the bell stays live.
+    function onStorage(e: StorageEvent) {
+      if (e.key === "emmapresh-orders") useOrdersStore.persist.rehydrate();
+    }
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("storage", onStorage);
+    };
   }, []);
 
   async function handleSignOut() {
@@ -40,10 +58,18 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <button className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5" aria-label="Notifications">
+        <Link
+          href="/admin/orders?status=order-created"
+          className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5"
+          aria-label={pendingCount > 0 ? `${pendingCount} order${pendingCount === 1 ? "" : "s"} awaiting confirmation` : "Notifications"}
+        >
           <Bell className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-        </button>
+          {hydrated && pendingCount > 0 && (
+            <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-white">
+              {pendingCount > 9 ? "9+" : pendingCount}
+            </span>
+          )}
+        </Link>
         <Link href="/" className="focus-ring hidden text-xs font-semibold text-body hover:text-primary sm:block">
           View Storefront →
         </Link>

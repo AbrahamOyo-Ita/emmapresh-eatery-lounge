@@ -10,8 +10,8 @@ export const branches: Branch[] = [
     phone: "+234 803 000 1111",
     whatsapp: "2348030001111",
     email: "abuja@emmapresh.com",
-    image: "/images/branches/abuja.jpg",
-    gallery: ["/images/branches/abuja-1.jpg", "/images/branches/abuja-2.jpg"],
+    image: "/EmmaPresh Abuja.png",
+    gallery: ["/EmmaPresh Abuja.png"],
     openingHours: [
       { days: "Monday – Saturday", hours: "8:00 AM – 10:00 PM" },
       { days: "Sunday", hours: "10:00 AM – 9:00 PM" },
@@ -39,8 +39,8 @@ export const branches: Branch[] = [
     phone: "+234 803 000 2222",
     whatsapp: "2348030002222",
     email: "lagos@emmapresh.com",
-    image: "/images/branches/lagos.jpg",
-    gallery: ["/images/branches/lagos-1.jpg", "/images/branches/lagos-2.jpg"],
+    image: "/EmmaPresh Lagos.png",
+    gallery: ["/EmmaPresh Lagos.png"],
     openingHours: [
       { days: "Monday – Saturday", hours: "8:00 AM – 11:00 PM" },
       { days: "Sunday", hours: "10:00 AM – 10:00 PM" },
@@ -68,8 +68,8 @@ export const branches: Branch[] = [
     phone: "+234 803 000 3333",
     whatsapp: "2348030003333",
     email: "badagry@emmapresh.com",
-    image: "/images/branches/badagry.jpg",
-    gallery: ["/images/branches/badagry-1.jpg", "/images/branches/badagry-2.jpg"],
+    image: "/EmmaPresh Badagry.png",
+    gallery: ["/EmmaPresh Badagry.png"],
     openingHours: [
       { days: "Monday – Sunday", hours: "9:00 AM – 9:00 PM" },
     ],

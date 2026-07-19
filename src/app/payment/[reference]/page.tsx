@@ -29,7 +29,10 @@ export default function PaymentPage() {
   const [hydrated, setHydrated] = React.useState(false);
   const countdown = useCountdown(30);
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const order = orders.find((o) => o.reference === params.reference);
 
@@ -127,6 +130,7 @@ export default function PaymentPage() {
               against the account before your order is accepted.
             </p>
             <ReceiptUpload
+              reference={order.reference}
               onSubmit={(receipt) => {
                 submitReceipt(order.reference, { ...receipt, uploadedAt: new Date().toISOString() });
               }}

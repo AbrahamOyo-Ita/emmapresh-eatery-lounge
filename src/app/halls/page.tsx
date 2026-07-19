@@ -34,7 +34,7 @@ export default function HallsPage() {
             const branch = branches.find((b) => b.slug === hall.branchSlug);
             return (
               <div key={hall.id} className="overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)]">
-                <FoodImage name={hall.name} icon="hall" className="h-40 w-full" />
+                <FoodImage name={hall.name} src={hall.image} icon="hall" className="h-40 w-full" />
                 <div className="p-5">
                   <h3 className="font-display text-base text-charcoal">{hall.name}</h3>
                   <p className="mt-1 flex items-center gap-1.5 text-xs text-body">

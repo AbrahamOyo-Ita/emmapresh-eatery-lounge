@@ -84,6 +84,16 @@ body {
   outline-offset: 2px;
 }
 
+.custom-number-input::-webkit-outer-spin-button,
+.custom-number-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.custom-number-input {
+  appearance: textfield;
+}
+
 @keyframes section-reveal {
   from {
     opacity: 0;
@@ -101,15 +111,6 @@ body {
   }
   50% {
     transform: translateY(-5px) scale(1.03);
-  }
-}
-
-@keyframes image-sheen {
-  from {
-    transform: translateX(-120%) rotate(10deg);
-  }
-  to {
-    transform: translateX(120%) rotate(10deg);
   }
 }
 
@@ -140,13 +141,4 @@ body {
     animation: food-icon-drift 5s ease-in-out infinite;
   }
 
-  .food-image-art::after {
-    animation: image-sheen 5.5s ease-in-out infinite;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    content: "";
-    inset: -20%;
-    pointer-events: none;
-    position: absolute;
-    width: 45%;
-  }
 }

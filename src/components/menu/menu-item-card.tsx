@@ -9,7 +9,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useBranchStore } from "@/stores/branch-store";
 import { useMenuStatusStore } from "@/stores/menu-status-store";
 import { useFavouritesStore } from "@/stores/favourites-store";
-import { priceForBranch } from "@/services/menu-service";
+import { priceForBranch } from "@/services/pricing";
 import { iconForCategory } from "@/lib/food-icon";
 import { formatCurrency, cn } from "@/lib/utils";
 import * as React from "react";
@@ -21,10 +21,17 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
   const favourited = useFavouritesStore((s) => s.isFavourited(item.id));
   const toggleFavourite = useFavouritesStore((s) => s.toggle);
   const [added, setAdded] = React.useState(false);
+  const [hydrated, setHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const price = priceForBranch(item, branchSlug);
   const hasRequiredOptions = item.optionGroups.some((g) => g.required);
   const soldOut = stockStatus === "sold-out";
+  const isFavourited = hydrated && favourited;
 
   function handleQuickAdd() {
     if (soldOut || hasRequiredOptions) return;
@@ -46,7 +53,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
     <div className="group relative flex flex-col overflow-hidden rounded-card border border-border/60 bg-white shadow-[var(--shadow-soft)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
       <Link href={`/menu/item/${item.slug}`} className="focus-ring block">
         <div className="relative">
-          <FoodImage name={item.name} icon={iconForCategory(item.categorySlug)} className="h-52 w-full sm:h-48" />
+          <FoodImage name={item.name} src={item.image} icon={iconForCategory(item.categorySlug)} className="h-52 w-full sm:h-48" />
           <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5">
             {item.isPopular && <Badge variant="primary">Popular</Badge>}
             {item.isNew && <Badge variant="accent">New</Badge>}
@@ -57,11 +64,11 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
       </Link>
       <button
         onClick={() => toggleFavourite(item.id)}
-        aria-pressed={favourited}
-        aria-label={favourited ? "Remove from favourites" : "Add to favourites"}
+        aria-pressed={isFavourited}
+        aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
         className="focus-ring absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-charcoal shadow-sm hover:scale-105"
       >
-        <Heart className={cn("h-4 w-4", favourited && "fill-primary text-primary")} aria-hidden="true" />
+        <Heart className={cn("h-4 w-4", isFavourited && "fill-primary text-primary")} aria-hidden="true" />
       </button>
 
       <div className="flex flex-1 flex-col p-5">

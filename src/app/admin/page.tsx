@@ -35,7 +35,10 @@ export default function AdminOverviewPage() {
   const hallEnquiries = useHallsStore((s) => s.enquiries);
   const academyApplications = useAcademyStore((s) => s.applications);
   const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const ordersToday = orders.filter((o) => isToday(o.createdAt));
   const revenueToday = ordersToday

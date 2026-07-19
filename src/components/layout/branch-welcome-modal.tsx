@@ -10,7 +10,10 @@ export function BranchWelcomeModal() {
   const { hasChosenBranch, setBranch } = useBranchStore();
   const [hydrated, setHydrated] = React.useState(false);
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   if (!hydrated || hasChosenBranch) return null;
 

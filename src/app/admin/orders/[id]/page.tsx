@@ -20,13 +20,17 @@ export default function AdminOrderDetailPage() {
   const [hydrated, setHydrated] = React.useState(false);
   const [notes, setNotes] = React.useState("");
 
-  React.useEffect(() => setHydrated(true), []);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setHydrated(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const order = orders.find((o) => o.reference === params.id);
 
   React.useEffect(() => {
-    if (order) setNotes(order.internalNotes ?? "");
-  }, [order?.reference]);
+    const frame = window.requestAnimationFrame(() => setNotes(order?.internalNotes ?? ""));
+    return () => window.cancelAnimationFrame(frame);
+  }, [order?.internalNotes]);
 
   if (!hydrated) return null;
 
