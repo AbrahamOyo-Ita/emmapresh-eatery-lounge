@@ -336,12 +336,12 @@ export function CheckoutForm() {
               <span />
             )}
             {stepIndex < steps.length - 1 ? (
-              <Button type="button" onClick={goNext}>
+              <Button key="continue-btn" type="button" onClick={goNext}>
                 Continue
                 <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             ) : (
-              <Button type="submit" loading={submitting}>
+              <Button key="place-order-btn" type="submit" loading={submitting}>
                 Place Order
               </Button>
             )}

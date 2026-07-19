@@ -6,15 +6,16 @@ export const siteConfig = {
   description:
     "Order meals, plan catering, book custom cakes, reserve event spaces and learn professional cooking across Abuja, Lagos and Badagry.",
   url: "https://www.emmapresh.com",
-  phone: "+234 800 000 0000",
-  whatsapp: "2348000000000",
-  email: "hello@emmapresh.com",
+  phone: "+234 803 386 8360",
+  secondaryPhone: "+234 803 794 1674",
+  whatsapp: "2348033868360",
+  email: "emmapresheateryandlounge@gmail.com",
   currency: "NGN",
   currencySymbol: "₦",
   social: {
     instagram: "https://instagram.com/emmapresh",
     facebook: "https://facebook.com/emmapresh",
-    twitter: "https://twitter.com/emmapresh",
+    tiktok: "https://www.tiktok.com/@emmapresheateryandlounge",
   },
 } as const;
 

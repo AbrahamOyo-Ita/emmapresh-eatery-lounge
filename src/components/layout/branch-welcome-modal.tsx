@@ -41,6 +41,7 @@ export function BranchWelcomeModal() {
               <span className="mt-1 flex items-center gap-1.5 text-xs text-body">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 {branch.phone}
+                {branch.secondaryPhone ? ` / ${branch.secondaryPhone}` : ""}
               </span>
             </button>
           ))}

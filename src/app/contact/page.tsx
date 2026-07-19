@@ -15,7 +15,9 @@ export default function ContactPage() {
       <div className="mb-10 text-center">
         <h1 className="font-display text-3xl text-charcoal sm:text-4xl">Contact Us</h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-body">
-          Reach us directly, or contact a specific branch below. General enquiries: {siteConfig.email}
+          Come and enjoy a good meal with us. We open daily from 9:00 AM to 10:00 PM, prepare food for indoor and
+          outdoor events, and make all kinds of snacks. Call {siteConfig.phone} or {siteConfig.secondaryPhone}, or
+          email {siteConfig.email}.
         </p>
       </div>
 
@@ -29,6 +31,7 @@ export default function ContactPage() {
               </p>
               <p className="mt-1.5 flex items-center gap-1.5 text-xs text-body">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {branch.phone}
+                {branch.secondaryPhone ? ` / ${branch.secondaryPhone}` : ""}
               </p>
               <p className="mt-1.5 flex items-center gap-1.5 text-xs text-body">
                 <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {branch.email}

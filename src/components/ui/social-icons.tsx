@@ -18,10 +18,10 @@ export function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function XIcon(props: SVGProps<SVGSVGElement>) {
+export function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="m4 4 6.5 8.4L4.3 20h2.1l5.2-6.1 4.2 6.1H20l-6.8-8.8L19.6 4h-2.1l-4.8 5.6L8.3 4H4Z" />
+      <path d="M15.4 3c.3 2.1 1.5 3.4 3.6 3.6v3.1a8.5 8.5 0 0 1-3.6-1v6.1a6.1 6.1 0 1 1-5.3-6.1v3.2a2.9 2.9 0 1 0 2.1 2.8V3h3.2Z" />
     </svg>
   );
 }

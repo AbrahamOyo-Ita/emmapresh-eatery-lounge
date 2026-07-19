@@ -28,6 +28,9 @@ export default function LocationsPage() {
             <FoodImage name={branch.name} src={branch.image} icon="hall" className="h-44 w-full" />
             <div className="p-5">
               <h2 className="font-display text-lg text-charcoal">{branch.name}</h2>
+              {branch.establishedDate && (
+                <p className="mt-1 text-xs font-medium text-primary">Established February 14, 2026</p>
+              )}
               <p className="mt-2 flex items-start gap-1.5 text-xs text-body">
                 <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 {branch.address}
@@ -41,6 +44,7 @@ export default function LocationsPage() {
               <p className="mt-1.5 flex items-center gap-1.5 text-xs text-body">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 {branch.phone}
+                {branch.secondaryPhone ? ` / ${branch.secondaryPhone}` : ""}
               </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {branch.hasCatering && <Badge variant="outline">Catering</Badge>}

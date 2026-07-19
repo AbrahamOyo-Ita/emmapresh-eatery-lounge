@@ -12,8 +12,8 @@ export const customerInfoSchema = z.object({
 });
 
 export const deliveryInfoSchema = z.object({
-  address: z.string().min(6, "Enter your delivery address"),
-  city: z.string().min(2, "Enter your city"),
+  address: z.string().optional(),
+  city: z.string().optional(),
   landmark: z.string().optional(),
 });
 

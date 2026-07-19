@@ -49,11 +49,15 @@ export default async function BranchDetailPage({ params }: PageProps) {
     url: `${siteConfig.url}/locations/${branch.slug}`,
     image: `${siteConfig.url}${branch.image}`,
     telephone: branch.phone,
+    contactPoint: branch.secondaryPhone
+      ? { "@type": "ContactPoint", telephone: branch.secondaryPhone, contactType: "customer service" }
+      : undefined,
     email: branch.email,
     priceRange: "₦₦",
     servesCuisine: ["Nigerian", "African", "Continental"],
     acceptsReservations: true,
     hasMenu: `${siteConfig.url}/menu?branch=${branch.slug}`,
+    foundingDate: branch.establishedDate,
     address: {
       "@type": "PostalAddress",
       streetAddress: branch.address,
@@ -92,14 +96,17 @@ export default async function BranchDetailPage({ params }: PageProps) {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <div>
           <h1 className="font-display text-3xl text-charcoal">{branch.name}</h1>
+          {branch.establishedDate && (
+            <p className="mt-2 text-sm font-semibold text-primary">Established February 14, 2026</p>
+          )}
           <p className="mt-2 flex items-start gap-2 text-sm text-body">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-            {branch.address}, {branch.state}
+            {branch.address}
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-body">
-            Visit {branch.name} for freshly prepared Nigerian meals, rice dishes, soups, grills, pastries and drinks
-            in {branch.city}. Order for delivery or pickup, reserve a table, or speak with our team about catering
-            {branch.hasEventHall ? " and event-hall bookings" : ""} in {branch.city}.
+            Come and enjoy freshly prepared Nigerian meals, rice dishes, soups, grills and all kinds of snacks at
+            {` ${branch.name}`}. We open daily from 9:00 AM to 10:00 PM and prepare food for indoor and outdoor events.
+            Order for delivery or pickup, reserve a table, or contact our catering team in {branch.city}.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -116,6 +123,7 @@ export default async function BranchDetailPage({ params }: PageProps) {
               <p className="mb-1 text-xs font-bold uppercase tracking-wide text-body">Contact</p>
               <p className="flex items-center gap-1.5 text-sm text-charcoal">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {branch.phone}
+                {branch.secondaryPhone ? ` / ${branch.secondaryPhone}` : ""}
               </p>
               <p className="flex items-center gap-1.5 text-sm text-charcoal">
                 <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {branch.email}

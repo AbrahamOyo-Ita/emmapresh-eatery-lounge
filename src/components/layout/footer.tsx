@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PhoneCall, Mail, MapPin } from "lucide-react";
-import { InstagramIcon, FacebookIcon, XIcon } from "@/components/ui/social-icons";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/ui/social-icons";
 import { Logo } from "./logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -49,14 +49,14 @@ export function Footer() {
             <Logo className="[&_span:first-child]:text-white [&_span:last-child]:text-white/50" />
             <p className="mt-4 text-sm text-white/60">{siteConfig.description}</p>
             <div className="mt-4 flex gap-3">
-              <a href={siteConfig.social.instagram} aria-label="Instagram" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
-                <InstagramIcon className="h-4 w-4" aria-hidden="true" />
-              </a>
               <a href={siteConfig.social.facebook} aria-label="Facebook" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
                 <FacebookIcon className="h-4 w-4" aria-hidden="true" />
               </a>
-              <a href={siteConfig.social.twitter} aria-label="Twitter" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
-                <XIcon className="h-4 w-4" aria-hidden="true" />
+              <a href={siteConfig.social.instagram} aria-label="Instagram" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
+                <InstagramIcon className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a href={siteConfig.social.tiktok} aria-label="TikTok" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20">
+                <TikTokIcon className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -94,6 +94,7 @@ export function Footer() {
               <li className="flex items-center gap-1.5 text-white/60">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 {siteConfig.phone}
+                {` / ${siteConfig.secondaryPhone}`}
               </li>
               <li className="flex items-center gap-1.5 text-white/60">
                 <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />

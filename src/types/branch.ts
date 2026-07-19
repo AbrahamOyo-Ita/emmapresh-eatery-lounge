@@ -18,11 +18,13 @@ export interface Branch {
   state: string;
   address: string;
   phone: string;
+  secondaryPhone?: string;
   whatsapp: string;
   email: string;
   image: string;
   gallery: string[];
   openingHours: OpeningHours[];
+  establishedDate?: string;
   deliveryFee: number;
   freeDeliveryThreshold: number;
   hasEventHall: boolean;

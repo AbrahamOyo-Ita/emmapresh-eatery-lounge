@@ -4,7 +4,20 @@ import { branchFromRow } from "@/lib/supabase/mappers";
 
 function applyPublishedBranchImage(branch: ReturnType<typeof branchFromRow>) {
   const published = _getBranchBySlug(branch.slug);
-  return published ? { ...branch, image: published.image, gallery: published.gallery } : branch;
+  return published
+    ? {
+        ...branch,
+        address: published.address,
+        phone: published.phone,
+        secondaryPhone: published.secondaryPhone,
+        whatsapp: published.whatsapp,
+        email: published.email,
+        openingHours: published.openingHours,
+        establishedDate: published.establishedDate,
+        image: published.image,
+        gallery: published.gallery,
+      }
+    : branch;
 }
 
 export async function getBranches() {

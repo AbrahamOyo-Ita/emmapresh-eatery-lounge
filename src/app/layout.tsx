@@ -68,6 +68,13 @@ export default function RootLayout({
     logo: `${siteConfig.url}/icon`,
     email: siteConfig.email,
     telephone: siteConfig.phone,
+    contactPoint: [siteConfig.phone, siteConfig.secondaryPhone].map((telephone) => ({
+      "@type": "ContactPoint",
+      telephone,
+      contactType: "customer service",
+      areaServed: "NG",
+      availableLanguage: "English",
+    })),
     address: branches.map((branch) => ({
       "@type": "PostalAddress",
       streetAddress: branch.address,
@@ -75,7 +82,7 @@ export default function RootLayout({
       addressRegion: branch.state,
       addressCountry: "NG",
     })),
-    sameAs: [siteConfig.social.instagram, siteConfig.social.facebook, siteConfig.social.twitter],
+    sameAs: [siteConfig.social.facebook, siteConfig.social.instagram, siteConfig.social.tiktok],
   };
 
   const restaurantJsonLd = {
@@ -99,6 +106,7 @@ export default function RootLayout({
       priceRange: "₦₦",
       hasMenu: `${siteConfig.url}/menu?branch=${branch.slug}`,
       acceptsReservations: true,
+      foundingDate: branch.establishedDate,
       parentOrganization: { "@id": `${siteConfig.url}/#organization` },
     })),
   };
