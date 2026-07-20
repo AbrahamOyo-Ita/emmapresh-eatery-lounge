@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isBootstrapAdmin } from "@/lib/admin-access";
 
 /**
  * Refreshes the Supabase auth session on every request, and gates every
@@ -35,11 +36,8 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    const { data: staff } = await supabase
-      .from("staff_profiles")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const { data: staff } = isBootstrapAdmin(user.email) ? { data: { user_id: user.id } } : await supabase
+      .from("staff_profiles").select("user_id").eq("user_id", user.id).maybeSingle();
 
     if (!staff) {
       await supabase.auth.signOut();
@@ -50,11 +48,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname === "/admin/login" && user) {
-    const { data: staff } = await supabase
-      .from("staff_profiles")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const { data: staff } = isBootstrapAdmin(user.email) ? { data: { user_id: user.id } } : await supabase
+      .from("staff_profiles").select("user_id").eq("user_id", user.id).maybeSingle();
     if (staff) return NextResponse.redirect(new URL("/admin", request.url));
   }
 

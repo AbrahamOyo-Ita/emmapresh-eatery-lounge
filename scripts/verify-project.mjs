@@ -9,6 +9,7 @@ assert.ok(existsSync(join(root, "src/app/api/submissions/route.ts")), "submissio
 assert.ok(existsSync(join(root, "src/app/api/uploads/route.ts")), "upload API route is missing");
 assert.ok(existsSync(join(root, "src/app/api/admin/snapshot/route.ts")), "admin snapshot API route is missing");
 assert.ok(existsSync(join(root, "src/app/api/admin/update/route.ts")), "admin update API route is missing");
+assert.ok(existsSync(join(root, "src/app/api/admin/auth/request-code/route.ts")), "admin OTP request route is missing");
 
 const envExample = read(".env.example");
 assert.match(envExample, /NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key/, "anon key placeholder must stay scrubbed");
@@ -27,6 +28,10 @@ const proxy = read("src/proxy.ts");
 assert.match(proxy, /staff_profiles/, "admin proxy must check staff_profiles");
 assert.match(proxy, /staff-access-required/, "admin proxy must reject users without staff access");
 assert.match(read("src/lib/admin-auth.ts"), /Staff access required/, "admin API guard must reject non-staff users");
+assert.match(read("src/lib/admin-access.ts"), /oyoitaabraham@gmail\.com/, "super-admin email must remain authorised");
+assert.match(read("src/lib/admin-access.ts"), /emmapresheateryandlounge@gmail\.com/, "company admin email must remain authorised");
+assert.match(read("src/app/admin/login/page.tsx"), /verifyOtp/, "admin login must verify a one-time email passcode");
+assert.match(read("src/app/api/admin/auth/request-code/route.ts"), /isBootstrapAdmin/, "OTP requests must reject unauthorised emails");
 assert.match(read("src/app/api/admin/snapshot/route.ts"), /requireStaffAccess/, "snapshot route must require staff access");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 

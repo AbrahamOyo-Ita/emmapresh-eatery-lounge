@@ -2,6 +2,7 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isBootstrapAdmin } from "@/lib/admin-access";
 
 export async function requireStaffAccess() {
   const supabase = await createClient();
@@ -9,6 +10,8 @@ export async function requireStaffAccess() {
   if (authError || !user) {
     return NextResponse.json({ ok: false, error: "Authentication required" }, { status: 401 });
   }
+
+  if (isBootstrapAdmin(user.email)) return null;
 
   const { data: staff } = await supabase
     .from("staff_profiles")

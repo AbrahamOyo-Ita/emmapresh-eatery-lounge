@@ -6,3 +6,8 @@ export const adminLoginSchema = z.object({
 });
 
 export type AdminLoginFormValues = z.infer<typeof adminLoginSchema>;
+
+export const adminOtpSchema = z.object({
+  email: z.string().email("Enter a valid email address"),
+  token: z.string().regex(/^\d{6}$/, "Enter the six-digit passcode"),
+});
