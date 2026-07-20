@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { sendEmail } from "@/lib/email";
+import { sendPushNotifications } from "@/lib/push";
 
 export type NotificationChannel = "email" | "sms" | "whatsapp" | "admin";
 
@@ -45,6 +46,11 @@ export async function notify(input: NotificationInput) {
         reference: input.entityReference,
       });
       emailQueued = delivery.skipped;
+    }
+    try {
+      await sendPushNotifications({ title: input.subject, body: input.message, url: input.actionUrl, tag: input.entityReference, actionLabel: input.actionLabel }, input.recipient);
+    } catch (pushError) {
+      console.error("Push notification delivery failed", { entityReference: input.entityReference, error: pushError instanceof Error ? pushError.message : "Unknown error" });
     }
     if (process.env.NOTIFICATION_WEBHOOK_URL) {
       const response = await fetch(process.env.NOTIFICATION_WEBHOOK_URL, {

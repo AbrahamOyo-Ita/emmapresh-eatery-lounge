@@ -39,6 +39,9 @@ assert.match(read("src/components/pwa/pwa-controller.tsx"), /linkSubscriptionToC
 assert.match(read("src/lib/notifications.ts"), /action_url: input\.actionUrl/, "push notification rows must include their destination URL");
 assert.match(read("src/components/checkout/receipt-upload.tsx"), /!response\.ok \|\| !upload\?\.ok \|\| !upload\?\.path/, "receipt upload must reject failed storage writes");
 assert.match(read("src/stores/orders-store.ts"), /receipt: \{ \.\.\.receipt, dataUrl: undefined \}/, "receipt persistence must not send base64 previews to the backend");
+assert.ok(existsSync(join(root, "src/app/account/notifications/page.tsx")), "customer notification inbox is missing");
+assert.ok(existsSync(join(root, "src/app/api/customer/notifications/route.ts")), "customer notification API is missing");
+assert.match(read("src/lib/notifications.ts"), /sendPushNotifications/, "application notifications must directly deliver web push");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 
 const adminLayout = read("src/app/admin/layout.tsx");

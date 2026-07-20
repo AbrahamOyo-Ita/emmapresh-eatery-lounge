@@ -61,7 +61,7 @@ export function PwaController() {
     if (response.ok) setPushState("enabled");
   }
   if (pathname?.startsWith("/admin")) return null;
-  const nav = [{href:"/",label:"Home",icon:Home},{href:"/menu",label:"Menu",icon:Menu},{href:"/cart",label:"Cart",icon:ShoppingBag},{href:"/account",label:"Account",icon:UserRound}];
+  const nav = [{href:"/",label:"Home",icon:Home},{href:"/menu",label:"Menu",icon:Menu},{href:"/cart",label:"Cart",icon:ShoppingBag},{href:"/account/notifications",label:"Alerts",icon:Bell},{href:"/account",label:"Account",icon:UserRound}];
   return <>
     {offline && <div className="fixed inset-x-0 top-0 z-[80] flex items-center justify-center gap-2 bg-charcoal px-4 py-2 text-xs font-semibold text-white"><WifiOff className="h-4 w-4" />Offline mode</div>}
     {showInstall && installPrompt && <div className="pwa-browser-only fixed inset-x-3 bottom-20 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-border bg-white p-3 shadow-2xl"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white"><Download className="h-5 w-5" /></span><div className="min-w-0 flex-1"><p className="text-sm font-bold text-charcoal">Install EmmaPresh</p><p className="text-xs text-body">Faster access and an app-like experience.</p></div><button onClick={install} className="rounded-full bg-primary px-3 py-2 text-xs font-bold text-white">Install</button><button onClick={() => { setShowInstall(false); sessionStorage.setItem("pwa-install-dismissed","1"); }} aria-label="Dismiss install prompt"><X className="h-4 w-4" /></button></div>}

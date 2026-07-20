@@ -10,6 +10,7 @@ export async function POST(request: Request) {
   const trustedWebhook = Boolean(process.env.PUSH_WEBHOOK_SECRET && secret === process.env.PUSH_WEBHOOK_SECRET);
   if (!trustedWebhook) { const denied = await requireStaffAccess(); if (denied) return denied; }
   const raw = await request.json();
+  if (raw?.record) return NextResponse.json({ ok: true, skipped: "Notifications are delivered directly by the application" });
   const source = raw?.record ? { title: raw.record.subject, body: raw.record.message, recipient: raw.record.recipient, url: raw.record.action_url, tag: raw.record.entity_reference } : raw;
   const parsed = payloadSchema.safeParse(source);
   if (!parsed.success) return NextResponse.json({ ok: false, error: "Invalid push payload" }, { status: 400 });

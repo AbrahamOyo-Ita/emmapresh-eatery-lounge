@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, User, Menu as MenuIcon, X } from "lucide-react";
+import { Bell, Search, ShoppingBag, User, Menu as MenuIcon, X } from "lucide-react";
 import { Logo } from "./logo";
 import { BranchSelector } from "./branch-selector";
 import { CartDrawer } from "@/components/cart/cart-drawer";
@@ -11,6 +11,8 @@ import { mainNav } from "@/config/site";
 import { useCartStore } from "@/stores/cart-store";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCustomerSessionStore } from "@/stores/customer-session-store";
+import { useNotificationsStore } from "@/stores/notifications-store";
 
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -18,6 +20,17 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const items = useCartStore((s) => s.items);
   const pathname = usePathname();
+  const session = useCustomerSessionStore((state) => state.session);
+  const notifications = useNotificationsStore((state) => state.notifications);
+  const readIds = useNotificationsStore((state) => state.readIds);
+  const refreshNotifications = useNotificationsStore((state) => state.refresh);
+
+  React.useEffect(() => {
+    if (!session) return;
+    void refreshNotifications(session.email, session.phone);
+    const interval = window.setInterval(() => void refreshNotifications(session.email, session.phone), 30_000);
+    return () => window.clearInterval(interval);
+  }, [refreshNotifications, session]);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -43,6 +56,7 @@ export function Header() {
   }, [mobileOpen]);
 
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const unreadCount = notifications.filter((item) => !readIds.includes(item.id)).length;
 
   if (pathname?.startsWith("/admin")) return null;
 
@@ -88,6 +102,14 @@ export function Header() {
             <div className="hidden md:block">
               <BranchSelector compact={scrolled} />
             </div>
+            <Link
+              href="/account/notifications"
+              className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-control hover:bg-black/5"
+              aria-label={`${unreadCount} unread notifications`}
+            >
+              <Bell className="h-5 w-5" aria-hidden="true" />
+              {unreadCount > 0 && <span className="absolute -right-0.5 -top-0.5 flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-primary px-1 text-[0.65rem] font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>}
+            </Link>
             <Link
               href="/search"
               className="focus-ring hidden h-9 w-9 items-center justify-center rounded-control hover:bg-black/5 sm:flex"
