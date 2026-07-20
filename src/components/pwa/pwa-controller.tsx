@@ -1,9 +1,10 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, Download, Home, Menu, ShoppingBag, UserRound, WifiOff, X } from "lucide-react";
+import { Bell, Download, Home, Menu, Share, ShoppingBag, SquarePlus, UserRound, WifiOff, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCustomerSessionStore } from "@/stores/customer-session-store";
 
@@ -15,6 +16,7 @@ export function PwaController() {
   const customerEmail = useCustomerSessionStore((state) => state.session?.email);
   const [installPrompt, setInstallPrompt] = React.useState<BeforeInstallPromptEvent | null>(null);
   const [showInstall, setShowInstall] = React.useState(false);
+  const [showIosInstall, setShowIosInstall] = React.useState(false);
   const [offline, setOffline] = React.useState(false);
   const [pushState, setPushState] = React.useState<"idle"|"enabled"|"denied"|"unsupported">("idle");
 
@@ -30,7 +32,13 @@ export function PwaController() {
       else if (Notification.permission === "denied") setPushState("denied");
     };
     queueMicrotask(updatePushState);
-    return () => { window.removeEventListener("beforeinstallprompt", onInstall); window.removeEventListener("online", updateNetwork); window.removeEventListener("offline", updateNetwork); };
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone));
+    const dismissedAt = Number(localStorage.getItem("pwa-ios-install-dismissed") || 0);
+    const dismissalExpired = Date.now() - dismissedAt > 7 * 24 * 60 * 60 * 1000;
+    let iosPromptTimer: number | undefined;
+    if (isIos && !isStandalone && dismissalExpired) iosPromptTimer = window.setTimeout(() => setShowIosInstall(true), 1800);
+    return () => { window.removeEventListener("beforeinstallprompt", onInstall); window.removeEventListener("online", updateNetwork); window.removeEventListener("offline", updateNetwork); if (iosPromptTimer) window.clearTimeout(iosPromptTimer); };
   }, []);
 
   React.useEffect(() => {
@@ -65,6 +73,7 @@ export function PwaController() {
   return <>
     {offline && <div className="fixed inset-x-0 top-0 z-[80] flex items-center justify-center gap-2 bg-charcoal px-4 py-2 text-xs font-semibold text-white"><WifiOff className="h-4 w-4" />Offline mode</div>}
     {showInstall && installPrompt && <div className="pwa-browser-only fixed inset-x-3 bottom-20 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-border bg-white p-3 shadow-2xl"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white"><Download className="h-5 w-5" /></span><div className="min-w-0 flex-1"><p className="text-sm font-bold text-charcoal">Install EmmaPresh</p><p className="text-xs text-body">Faster access and an app-like experience.</p></div><button onClick={install} className="rounded-full bg-primary px-3 py-2 text-xs font-bold text-white">Install</button><button onClick={() => { setShowInstall(false); sessionStorage.setItem("pwa-install-dismissed","1"); }} aria-label="Dismiss install prompt"><X className="h-4 w-4" /></button></div>}
+    {showIosInstall && <div className="fixed inset-0 z-[90] flex items-end bg-charcoal/55 p-3 backdrop-blur-[2px]" role="dialog" aria-modal="true" aria-labelledby="ios-install-title"><div className="mx-auto w-full max-w-md rounded-[1.75rem] bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl"><div className="flex items-start justify-between gap-4"><div className="flex items-center gap-3"><img src="/icons/icon-192.png" alt="" className="h-14 w-14 rounded-2xl" /><div><h2 id="ios-install-title" className="font-display text-lg text-charcoal">Install EmmaPresh</h2><p className="text-xs text-body">Use it like a real app on your iPhone.</p></div></div><button onClick={() => { setShowIosInstall(false); localStorage.setItem("pwa-ios-install-dismissed", String(Date.now())); }} className="rounded-full p-2 hover:bg-cream-soft" aria-label="Close install instructions"><X className="h-5 w-5" /></button></div><ol className="mt-5 space-y-3"><li className="flex items-center gap-3 rounded-2xl bg-cream-soft p-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary"><Share className="h-5 w-5" /></span><p className="text-sm text-charcoal"><strong>1. Tap Share</strong> in your browser toolbar.</p></li><li className="flex items-center gap-3 rounded-2xl bg-cream-soft p-3"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-primary"><SquarePlus className="h-5 w-5" /></span><p className="text-sm text-charcoal"><strong>2. Choose Add to Home Screen</strong>, then tap Add.</p></li></ol><p className="mt-4 text-center text-xs text-body">The app will open full-screen with notifications and offline access.</p></div></div>}
     {pushState === "idle" && process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && <button onClick={enablePush} className="pwa-installed-only fixed bottom-24 left-4 z-40 items-center gap-2 rounded-full bg-charcoal px-4 py-3 text-xs font-bold text-white shadow-xl"><Bell className="h-4 w-4" />Enable updates</button>}
     <nav className="pwa-installed-only fixed inset-x-0 bottom-0 z-40 items-center justify-around border-t border-border bg-white/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur-xl" aria-label="App navigation">{nav.map((item) => { const active = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href)); return <Link key={item.href} href={item.href} className={cn("flex min-w-16 flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[.65rem] font-bold",active?"text-primary":"text-body")}><item.icon className="h-5 w-5" />{item.label}</Link>; })}</nav>
   </>;
