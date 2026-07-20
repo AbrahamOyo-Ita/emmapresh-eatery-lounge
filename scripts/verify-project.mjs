@@ -42,6 +42,10 @@ assert.match(read("src/stores/orders-store.ts"), /receipt: \{ \.\.\.receipt, dat
 assert.ok(existsSync(join(root, "src/app/account/notifications/page.tsx")), "customer notification inbox is missing");
 assert.ok(existsSync(join(root, "src/app/api/customer/notifications/route.ts")), "customer notification API is missing");
 assert.match(read("src/lib/notifications.ts"), /sendPushNotifications/, "application notifications must directly deliver web push");
+assert.ok(existsSync(join(root, "supabase/migrations/20260720170000_business_automation.sql")), "business automation migration is missing");
+assert.match(read("supabase/migrations/20260720170000_business_automation.sql"), /run_business_automation/, "business automation runner is missing");
+assert.match(read("supabase/migrations/20260720170000_business_automation.sql"), /automation_key/, "automation notifications must be idempotent");
+assert.match(read("src/app/api/push/send/route.ts"), /automationRecordSchema/, "push webhook must deliver scheduled automation notifications");
 assert.match(read("src/components/pwa/pwa-controller.tsx"), /Add to Home Screen/, "iOS users must receive manual installation instructions");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 
