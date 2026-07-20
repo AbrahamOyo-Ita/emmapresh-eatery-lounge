@@ -47,8 +47,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --font-display: var(--font-display);
-  --font-sans: var(--font-sans);
+  --font-display: var(--font-brand);
+  --font-sans: var(--font-brand);
 
   --radius-card: var(--radius-card);
   --radius-control: var(--radius-control);

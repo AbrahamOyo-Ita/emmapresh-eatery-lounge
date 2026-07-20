@@ -85,6 +85,8 @@ export function FoodImage({ name, src, icon = "default", className, iconClassNam
         <img
           src={src}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           onError={() => setFailed(true)}
           aria-hidden="true"

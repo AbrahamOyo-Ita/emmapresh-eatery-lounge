@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { displayFont, bodyFont } from "@/config/fonts";
+import { brandFont } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -127,7 +127,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}>
+    <html lang="en" className={`${brandFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-white text-charcoal">
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={restaurantJsonLd} />
