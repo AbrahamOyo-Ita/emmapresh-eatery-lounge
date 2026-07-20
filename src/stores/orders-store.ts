@@ -39,7 +39,7 @@ interface OrdersState {
     reference: string,
     approve: boolean,
     verification: Order["payment"]["verification"] & { rejectionReason?: string }
-  ) => void;
+  ) => Promise<void>;
   updateOrderStatus: (reference: string, status: OrderStatus, note?: string) => void;
   setInternalNotes: (reference: string, notes: string) => void;
 }
@@ -107,29 +107,14 @@ export const useOrdersStore = create<OrdersState>()(
         });
         await persistEntity("orders", updatedOrder);
       },
-      verifyPayment: (reference, approve, verification) => {
-        set({
-          orders: get().orders.map((order) => {
-            if (order.reference !== reference) return order;
-            if (approve) {
-              const updated = pushStatus(order, "payment-verified", "Payment verified by finance");
-              return {
-                ...updated,
-                payment: { ...updated.payment, status: "payment-verified", verification },
-              };
-            }
-            const updated = pushStatus(order, "payment-under-review", verification.rejectionReason ?? "Payment rejected — clearer receipt requested");
-            return {
-              ...updated,
-              payment: { ...updated.payment, status: "payment-rejected", verification },
-            };
-          }),
-        });
-        patchEntity("orders", reference, {
-          status: get().getOrderByReference(reference)?.status,
-          payment: get().getOrderByReference(reference)?.payment,
-          statusHistory: get().getOrderByReference(reference)?.statusHistory,
-        });
+      verifyPayment: async (reference, approve, verification) => {
+        const existing = get().getOrderByReference(reference);
+        if (!existing) throw new Error("Order not found");
+        const statusUpdated = pushStatus(existing, approve ? "payment-verified" : "payment-under-review", approve ? "Payment verified by finance" : verification.rejectionReason ?? "Payment rejected — clearer receipt requested");
+        const updated = { ...statusUpdated, payment: { ...statusUpdated.payment, status: approve ? "payment-verified" as const : "payment-rejected" as const, verification } };
+        const persisted = await patchEntity("orders", reference, { status: updated.status, payment: updated.payment, statusHistory: updated.statusHistory });
+        if (!persisted?.ok) throw new Error("Payment update could not be saved. Please try again.");
+        set({ orders: get().orders.map((order) => order.reference === reference ? updated : order) });
       },
       updateOrderStatus: (reference, status, note) => {
         set({

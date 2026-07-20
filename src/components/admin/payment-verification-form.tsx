@@ -16,24 +16,28 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
   const [note, setNote] = React.useState("");
   const [showReject, setShowReject] = React.useState(false);
   const [rejectionReason, setRejectionReason] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  function handleApprove() {
-    verifyPayment(order.reference, true, {
+  async function handleApprove() {
+    setSubmitting(true); setSubmitError(null);
+    try { await verifyPayment(order.reference, true, {
       verifiedBy: "Finance Officer",
       verifiedAt: new Date().toISOString(),
       amountReceived: Number(amountReceived),
       paymentReference,
       paymentDate,
       note,
-    });
+    }); } catch (error) { setSubmitError(error instanceof Error ? error.message : "Approval failed."); } finally { setSubmitting(false); }
   }
 
-  function handleReject() {
-    verifyPayment(order.reference, false, {
+  async function handleReject() {
+    setSubmitting(true); setSubmitError(null);
+    try { await verifyPayment(order.reference, false, {
       verifiedBy: "Finance Officer",
       verifiedAt: new Date().toISOString(),
       rejectionReason: rejectionReason || "Receipt unclear or amount does not match",
-    });
+    }); } catch (error) { setSubmitError(error instanceof Error ? error.message : "Rejection failed."); } finally { setSubmitting(false); }
   }
 
   if (order.payment.method !== "bank-transfer") {
@@ -100,7 +104,7 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
           </div>
           <div className="grid gap-2 sm:flex">
             <Button className="w-full sm:w-auto" variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
-            <Button className="w-full bg-error hover:bg-error/90 sm:w-auto" variant="primary" onClick={handleReject}>Confirm Rejection</Button>
+            <Button className="w-full bg-error hover:bg-error/90 sm:w-auto" variant="primary" onClick={handleReject} loading={submitting}>Confirm Rejection</Button>
           </div>
         </div>
       ) : (
@@ -128,11 +132,12 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
               <XCircle className="h-4 w-4" aria-hidden="true" />
               Reject
             </Button>
-            <Button className="w-full sm:w-auto" onClick={handleApprove}>
+            <Button className="w-full sm:w-auto" onClick={handleApprove} loading={submitting}>
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               Approve Payment
             </Button>
           </div>
+          {submitError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm font-semibold text-error">{submitError}</p>}
         </div>
       )}
     </div>

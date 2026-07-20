@@ -35,6 +35,8 @@ assert.match(read("src/app/api/admin/auth/request-code/route.ts"), /isBootstrapA
 assert.match(read("src/app/api/admin/snapshot/route.ts"), /requireStaffAccess/, "snapshot route must require staff access");
 assert.match(read("src/components/admin/backend-hydration.tsx"), /setInterval\(\(\) => void hydrate\(\), 10_000\)/, "admin dashboard must refresh backend data live");
 assert.match(read("src/stores/orders-store.ts"), /if \(!persisted\?\.persisted\)/, "checkout must not report success before backend persistence");
+assert.match(read("src/components/pwa/pwa-controller.tsx"), /linkSubscriptionToCustomer/, "PWA push subscription must link to the checkout customer");
+assert.match(read("src/lib/notifications.ts"), /action_url: input\.actionUrl/, "push notification rows must include their destination URL");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 
 const adminLayout = read("src/app/admin/layout.tsx");

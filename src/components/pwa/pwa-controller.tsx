@@ -33,6 +33,23 @@ export function PwaController() {
     return () => { window.removeEventListener("beforeinstallprompt", onInstall); window.removeEventListener("online", updateNetwork); window.removeEventListener("offline", updateNetwork); };
   }, []);
 
+  React.useEffect(() => {
+    if (!customerEmail || !("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window) || Notification.permission !== "granted") return;
+    let active = true;
+    async function linkSubscriptionToCustomer() {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      if (!subscription || !active) return;
+      await fetch("/api/push/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...subscription.toJSON(), customerEmail }),
+      });
+    }
+    void linkSubscriptionToCustomer();
+    return () => { active = false; };
+  }, [customerEmail]);
+
   async function install() { if (!installPrompt) return; await installPrompt.prompt(); const choice = await installPrompt.userChoice; if (choice.outcome === "accepted") setShowInstall(false); setInstallPrompt(null); }
   async function enablePush() {
     if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return setPushState("unsupported");

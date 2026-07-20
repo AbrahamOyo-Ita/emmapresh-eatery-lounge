@@ -26,6 +26,7 @@ export async function notify(input: NotificationInput) {
       message: input.message,
       entity_type: input.entityType,
       entity_reference: input.entityReference,
+      action_url: input.actionUrl,
       status: "queued",
     }).select("id").maybeSingle();
     notificationId = data?.id;
