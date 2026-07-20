@@ -28,7 +28,7 @@ function AdminLoginForm() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to send passcode.");
       setEmail(email.trim().toLowerCase()); setStep("code");
-      setMessage("A six-digit passcode has been sent to your email.");
+      setMessage("A one-time passcode has been sent to your email.");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Unable to send passcode.");
     } finally { setLoading(false); }
@@ -36,7 +36,7 @@ function AdminLoginForm() {
 
   async function verifyCode(event: React.FormEvent) {
     event.preventDefault();
-    if (!/^\d{6}$/.test(token)) return setError("Enter the complete six-digit passcode.");
+    if (!/^\d{6,10}$/.test(token)) return setError("Enter the complete passcode from your email.");
     setLoading(true); setError(null);
     const supabase = createClient();
     const { error: verifyError } = await supabase.auth.verifyOtp({ email, token, type: "email" });
@@ -64,7 +64,7 @@ function AdminLoginForm() {
         ) : (
           <form onSubmit={verifyCode} className="space-y-5">
             <button type="button" onClick={() => { setStep("email"); setToken(""); setError(null); setMessage(null); }} className="flex items-center gap-1 text-xs font-bold text-body hover:text-primary"><ArrowLeft className="h-3.5 w-3.5" />Change email</button>
-            <div><Label htmlFor="token">Six-digit passcode</Label><div className="relative"><KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-body" /><Input id="token" type="text" required autoFocus inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={token} onChange={(event) => setToken(event.target.value.replace(/\D/g, "").slice(0, 6))} className="pl-10 text-center text-xl font-bold tracking-[.35em]" placeholder="000000" /></div><p className="mt-2 text-xs text-body">Sent to {email}</p></div>
+            <div><Label htmlFor="token">One-time passcode</Label><div className="relative"><KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-body" /><Input id="token" type="text" required autoFocus inputMode="numeric" autoComplete="one-time-code" minLength={6} maxLength={10} value={token} onChange={(event) => setToken(event.target.value.replace(/\D/g, "").slice(0, 10))} className="pl-10 text-center text-xl font-bold tracking-[.22em]" placeholder="00000000" /></div><p className="mt-2 text-xs text-body">Enter the code sent to {email}</p></div>
             <Button type="submit" size="lg" className="w-full" loading={loading}>Verify and open dashboard</Button>
             <button type="button" disabled={loading} onClick={(event) => requestCode(event as unknown as React.FormEvent)} className="w-full text-center text-xs font-bold text-primary disabled:opacity-50">Send a new passcode</button>
           </form>
