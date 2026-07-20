@@ -61,6 +61,10 @@ export function BackendHydration() {
       }
     }
     void hydrate();
+    const refreshInterval = window.setInterval(() => void hydrate(), 10_000);
+    const refreshWhenVisible = () => { if (document.visibilityState === "visible") void hydrate(); };
+    window.addEventListener("focus", hydrate);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
     fetch("/api/admin/workspace", { cache: "no-store" }).then((response) => response.json()).then((workspace) => {
       if (!active || !workspace.ok || !workspace.data) return;
       const data = workspace.data;
@@ -75,6 +79,9 @@ export function BackendHydration() {
     }).catch(() => undefined);
     return () => {
       active = false;
+      window.clearInterval(refreshInterval);
+      window.removeEventListener("focus", hydrate);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
     };
   }, [hydrateCrm, setAcademy, setCakeRequests, setCatering, setContact, setHalls, setMealPlans, setOrders, setProjectCards, setPromotions, setReservations]);
 

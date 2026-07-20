@@ -32,6 +32,7 @@ export function CheckoutForm() {
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const [submitting, setSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [successOrder, setSuccessOrder] = React.useState<{ reference: string; paymentMethod: PaymentMethod } | null>(null);
 
   const {
@@ -79,32 +80,22 @@ export function CheckoutForm() {
     setStepIndex((i) => Math.max(i - 1, 0));
   }
 
-  function onSubmit(data: CheckoutFormValues) {
+  async function onSubmit(data: CheckoutFormValues) {
     if (items.length === 0) return;
-    setSubmitting(true);
-    const order = createOrder({
-      branchSlug,
-      items,
-      customer: data.customer,
-      fulfilmentMethod: data.fulfilmentMethod,
-      delivery:
-        data.fulfilmentMethod === "delivery"
-          ? data.delivery
-          : data.fulfilmentMethod === "dine-in"
-            ? { tableNumber: data.tableNumber }
-            : undefined,
-      requestedTime: data.requestedTime,
-      paymentMethod: data.paymentMethod,
-      subtotal: subtotalAmount,
-      deliveryFee,
-      serviceCharge,
-      discount: 0,
-      total,
-    });
-    clearCart();
-    setCustomerSession(data.customer);
-    setSuccessOrder({ reference: order.reference, paymentMethod: data.paymentMethod });
-    setSubmitting(false);
+    setSubmitting(true); setSubmitError(null);
+    try {
+      const order = await createOrder({
+        branchSlug, items, customer: data.customer, fulfilmentMethod: data.fulfilmentMethod,
+        delivery: data.fulfilmentMethod === "delivery" ? data.delivery : data.fulfilmentMethod === "dine-in" ? { tableNumber: data.tableNumber } : undefined,
+        requestedTime: data.requestedTime, paymentMethod: data.paymentMethod, subtotal: subtotalAmount,
+        deliveryFee, serviceCharge, discount: 0, total,
+      });
+      clearCart();
+      setCustomerSession(data.customer);
+      setSuccessOrder({ reference: order.reference, paymentMethod: data.paymentMethod });
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Your order could not be saved. Please try again.");
+    } finally { setSubmitting(false); }
   }
 
   function continueAfterSuccess() {
@@ -346,6 +337,7 @@ export function CheckoutForm() {
               </Button>
             )}
           </div>
+          {submitError && <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-semibold text-error">{submitError}</p>}
         </form>
       </div>
 

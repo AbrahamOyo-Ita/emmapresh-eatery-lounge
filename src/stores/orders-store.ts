@@ -32,7 +32,7 @@ interface CreateOrderInput {
 interface OrdersState {
   orders: Order[];
   setOrders: (orders: Order[]) => void;
-  createOrder: (input: CreateOrderInput) => Order;
+  createOrder: (input: CreateOrderInput) => Promise<Order>;
   getOrderByReference: (reference: string) => Order | undefined;
   submitReceipt: (reference: string, receipt: NonNullable<Order["payment"]["receipt"]>) => Promise<void>;
   verifyPayment: (
@@ -58,7 +58,7 @@ export const useOrdersStore = create<OrdersState>()(
     (set, get) => ({
       orders: seedOrders,
       setOrders: (orders) => set({ orders }),
-      createOrder: (input) => {
+      createOrder: async (input) => {
         const now = new Date().toISOString();
         const branch = branches.find((b) => b.slug === input.branchSlug);
         const order: Order = {
@@ -86,7 +86,11 @@ export const useOrdersStore = create<OrdersState>()(
         };
         void branch;
         set({ orders: [order, ...get().orders] });
-        persistEntity("orders", order);
+        const persisted = await persistEntity("orders", order);
+        if (!persisted?.persisted) {
+          set({ orders: get().orders.filter((candidate) => candidate.reference !== order.reference) });
+          throw new Error("Your order could not be saved. Please check your connection and try again.");
+        }
         return order;
       },
       getOrderByReference: (reference) => get().orders.find((o) => o.reference === reference),

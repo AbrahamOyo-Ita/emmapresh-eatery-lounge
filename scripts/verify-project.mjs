@@ -33,6 +33,8 @@ assert.match(read("src/lib/admin-access.ts"), /emmapresheateryandlounge@gmail\.c
 assert.match(read("src/app/admin/login/page.tsx"), /verifyOtp/, "admin login must verify a one-time email passcode");
 assert.match(read("src/app/api/admin/auth/request-code/route.ts"), /isBootstrapAdmin/, "OTP requests must reject unauthorised emails");
 assert.match(read("src/app/api/admin/snapshot/route.ts"), /requireStaffAccess/, "snapshot route must require staff access");
+assert.match(read("src/components/admin/backend-hydration.tsx"), /setInterval\(\(\) => void hydrate\(\), 10_000\)/, "admin dashboard must refresh backend data live");
+assert.match(read("src/stores/orders-store.ts"), /if \(!persisted\?\.persisted\)/, "checkout must not report success before backend persistence");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 
 const adminLayout = read("src/app/admin/layout.tsx");
