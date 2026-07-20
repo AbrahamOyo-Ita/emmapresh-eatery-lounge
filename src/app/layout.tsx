@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { displayFont, bodyFont } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { Header } from "@/components/layout/header";
@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { BranchWelcomeModal } from "@/components/layout/branch-welcome-modal";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { JsonLd } from "@/components/seo/json-ld";
+import { PwaController } from "@/components/pwa/pwa-controller";
 import { branches } from "@/data/branches";
 import "./globals.css";
 
@@ -51,6 +52,16 @@ export const metadata: Metadata = {
     images: ["/EmmaPresh Lagos.png"],
   },
   manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: siteConfig.shortName, statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#C5161D",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -123,6 +134,7 @@ export default function RootLayout({
         <Footer />
         <BranchWelcomeModal />
         <WhatsAppButton />
+        <PwaController />
       </body>
     </html>
   );

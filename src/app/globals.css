@@ -110,6 +110,20 @@ button, a, input, select, textarea {
   color: var(--color-white);
 }
 
+.pwa-installed-only {
+  display: none;
+}
+
+@media (display-mode: standalone) {
+  .pwa-installed-only { display: flex; }
+  .pwa-browser-only { display: none !important; }
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    overscroll-behavior-y: none;
+  }
+}
+
 .focus-ring {
   outline: none;
 }
