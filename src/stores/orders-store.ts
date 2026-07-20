@@ -96,16 +96,19 @@ export const useOrdersStore = create<OrdersState>()(
       getOrderByReference: (reference) => get().orders.find((o) => o.reference === reference),
       submitReceipt: async (reference, receipt) => {
         const existing = get().getOrderByReference(reference);
-        if (!existing) return;
+        if (!existing) throw new Error("Order not found.");
         const statusUpdated = pushStatus(existing, "payment-submitted", "Customer uploaded payment receipt");
         const updatedOrder: Order = {
           ...statusUpdated,
           payment: { ...statusUpdated.payment, status: "payment-submitted", receipt },
         };
-        set({
-          orders: get().orders.map((order) => (order.reference === reference ? updatedOrder : order)),
-        });
-        await persistEntity("orders", updatedOrder);
+        const serverOrder: Order = {
+          ...updatedOrder,
+          payment: { ...updatedOrder.payment, receipt: { ...receipt, dataUrl: undefined } },
+        };
+        const persisted = await persistEntity("orders", serverOrder);
+        if (!persisted?.persisted) throw new Error("Your receipt could not be saved. Please try again.");
+        set({ orders: get().orders.map((order) => order.reference === reference ? updatedOrder : order) });
       },
       verifyPayment: async (reference, approve, verification) => {
         const existing = get().getOrderByReference(reference);

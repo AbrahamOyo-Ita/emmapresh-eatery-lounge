@@ -27,6 +27,7 @@ export default function PaymentPage() {
   const orders = useOrdersStore((s) => s.orders);
   const submitReceipt = useOrdersStore((s) => s.submitReceipt);
   const [hydrated, setHydrated] = React.useState(false);
+  const reconciliationAttempted = React.useRef(new Set<string>());
   const countdown = useCountdown(30);
 
   React.useEffect(() => {
@@ -35,6 +36,12 @@ export default function PaymentPage() {
   }, []);
 
   const order = orders.find((o) => o.reference === params.reference);
+
+  React.useEffect(() => {
+    if (!order?.payment.receipt || order.payment.status !== "payment-submitted" || order.payment.receipt.dataUrl === undefined || reconciliationAttempted.current.has(order.reference)) return;
+    reconciliationAttempted.current.add(order.reference);
+    void submitReceipt(order.reference, order.payment.receipt).catch(() => undefined);
+  }, [order, submitReceipt]);
 
   if (!hydrated) return null;
 

@@ -58,6 +58,9 @@ export function ReceiptUpload({ reference, onSubmit }: ReceiptUploadProps) {
       formData.append("file", file);
       const response = await fetch("/api/uploads", { method: "POST", body: formData });
       const upload = await response.json().catch(() => null);
+      if (!response.ok || !upload?.ok || !upload?.path) {
+        throw new Error(upload?.error || "Receipt upload failed.");
+      }
       await onSubmit({
         fileName: file.name,
         fileType: file.type,
@@ -67,8 +70,8 @@ export function ReceiptUpload({ reference, onSubmit }: ReceiptUploadProps) {
         storagePath: upload?.path,
       });
       setProgress(100);
-    } catch {
-      setError("Upload failed. Please try again.");
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Upload failed. Please try again.");
     } finally {
       clearInterval(interval);
       setUploading(false);
