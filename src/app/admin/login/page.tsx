@@ -15,6 +15,7 @@ function AdminLoginForm() {
   const searchParams = useSearchParams();
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const accessError = searchParams.get("error") === "staff-access-required";
 
   const {
     register,
@@ -61,10 +62,10 @@ function AdminLoginForm() {
             <FieldError>{errors.password?.message}</FieldError>
           </div>
 
-          {error && (
+          {(error || accessError) && (
             <p role="alert" className="flex items-center gap-1.5 text-sm font-medium text-error">
               <AlertCircle className="h-4 w-4" aria-hidden="true" />
-              {error}
+              {error ?? "This account does not have staff access."}
             </p>
           )}
 

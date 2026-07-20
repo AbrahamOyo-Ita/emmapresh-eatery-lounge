@@ -34,7 +34,7 @@ export default function AdminCateringPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="font-display text-base text-charcoal">{request.reference}</p>
-                <p className="text-sm text-body">{request.customerName} · {request.phone} · {request.email}</p>
+                <p className="break-words text-sm text-body">{request.customerName} · {request.phone} · {request.email}</p>
                 <p className="mt-1 text-sm text-charcoal capitalize">
                   {request.cateringType} — {request.guestCount} guests — {new Date(request.eventDate).toLocaleDateString()}
                 </p>
@@ -43,7 +43,7 @@ export default function AdminCateringPage() {
               <Select
                 value={request.status}
                 onChange={(e) => updateStatus(request.id, e.target.value as CateringStatus)}
-                className="w-auto"
+                className="w-full sm:w-auto"
               >
                 {statuses.map((s) => (
                   <option key={s} value={s}>{s.replace(/-/g, " ")}</option>
@@ -58,7 +58,7 @@ export default function AdminCateringPage() {
                   <Input
                     type="number"
                     placeholder="Quote amount (₦)"
-                    className="w-48"
+                    className="w-full sm:w-48"
                     value={quoteDrafts[request.id] ?? ""}
                     onChange={(e) => setQuoteDrafts((prev) => ({ ...prev, [request.id]: e.target.value }))}
                   />

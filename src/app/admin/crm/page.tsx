@@ -120,11 +120,11 @@ export default function AdminCrmPage() {
 
       <section className="rounded-2xl border border-border/60 bg-white">
         <div className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-4">
-          <div className="relative min-w-64 flex-1">
+          <div className="relative min-w-0 flex-[1_1_100%] sm:min-w-64 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-body" aria-hidden="true" />
             <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search customers, tags, email or phone" className="pl-10" />
           </div>
-          <Select value={stage} onChange={(event) => setStage(event.target.value as CrmStage | "all")} className="w-auto min-w-44">
+          <Select value={stage} onChange={(event) => setStage(event.target.value as CrmStage | "all")} className="w-full sm:w-auto sm:min-w-44">
             <option value="all">All stages</option>
             {(Object.keys(stageLabels) as CrmStage[]).map((key) => <option key={key} value={key}>{stageLabels[key]}</option>)}
           </Select>

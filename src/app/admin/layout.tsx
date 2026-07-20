@@ -8,18 +8,24 @@ import { BackendHydration } from "@/components/admin/backend-hydration";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setMobileNavOpen(false));
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
 
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
   return (
-    <div className="flex min-h-screen bg-cream-soft">
-      <AdminSidebar />
+    <div className="admin-shell flex min-h-dvh bg-cream-soft">
+      <AdminSidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col">
         <BackendHydration />
-        <AdminHeader />
-        <main className="flex-1 overflow-x-hidden p-4 sm:p-6">{children}</main>
+        <AdminHeader onMenuClick={() => setMobileNavOpen(true)} />
+        <main className="admin-content min-w-0 flex-1 overflow-x-hidden p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

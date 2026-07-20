@@ -30,6 +30,18 @@ export function Header() {
     return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && setMobileOpen(false);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileOpen]);
+
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   if (pathname?.startsWith("/admin")) return null;
@@ -140,6 +152,9 @@ export function Header() {
               ))}
               <Link href="/account" className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft">
                 Account
+              </Link>
+              <Link href="/search" className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft">
+                Search
               </Link>
               <Link href="/contact" className="focus-ring rounded-control px-3 py-2.5 text-sm font-semibold text-charcoal hover:bg-cream-soft">
                 Contact

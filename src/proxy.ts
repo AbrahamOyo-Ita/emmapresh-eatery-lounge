@@ -26,9 +26,37 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // Demo mode: keep admin routes open until production auth is re-enabled.
+  if (request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/admin/login") {
+    if (!user) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const { data: staff } = await supabase
+      .from("staff_profiles")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!staff) {
+      await supabase.auth.signOut();
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("error", "staff-access-required");
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  if (request.nextUrl.pathname === "/admin/login" && user) {
+    const { data: staff } = await supabase
+      .from("staff_profiles")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (staff) return NextResponse.redirect(new URL("/admin", request.url));
+  }
 
   return response;
 }

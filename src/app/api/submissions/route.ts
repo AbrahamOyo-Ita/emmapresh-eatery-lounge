@@ -3,6 +3,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { notify } from "@/lib/notifications";
 import { siteConfig } from "@/config/site";
+import { academyCourses } from "@/data/academy-courses";
+import { halls } from "@/data/halls";
 import {
   academyApplicationToRow,
   cakeRequestToRow,
@@ -93,7 +95,25 @@ export async function POST(request: Request) {
 
   if (hasSupabaseEnv()) {
     const supabase = createAdminClient();
-    const { error } = await supabase.from(table as never).upsert(row as never);
+    const databaseRow = { ...(row as Record<string, unknown>) };
+
+    if (entity === "academy") {
+      const localCourse = academyCourses.find((course) => course.id === (payload as NotificationPayload & { courseId?: string }).courseId);
+      if (!localCourse) return NextResponse.json({ ok: false, error: "Course not found" }, { status: 400 });
+      const { data: course, error: courseError } = await supabase.from("academy_courses").select("id").eq("slug", localCourse.slug).maybeSingle();
+      if (courseError || !course) return NextResponse.json({ ok: false, error: courseError?.message ?? "Course is not configured" }, { status: 500 });
+      databaseRow.course_id = course.id;
+    }
+
+    if (entity === "halls") {
+      const localHall = halls.find((hall) => hall.id === (payload as NotificationPayload & { hallId?: string }).hallId);
+      if (!localHall) return NextResponse.json({ ok: false, error: "Hall not found" }, { status: 400 });
+      const { data: hall, error: hallError } = await supabase.from("halls").select("id").eq("slug", localHall.slug).maybeSingle();
+      if (hallError || !hall) return NextResponse.json({ ok: false, error: hallError?.message ?? "Hall is not configured" }, { status: 500 });
+      databaseRow.hall_id = hall.id;
+    }
+
+    const { error } = await supabase.from(table as never).upsert(databaseRow as never);
     if (error) {
       return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
     }

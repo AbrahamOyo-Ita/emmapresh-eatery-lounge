@@ -50,12 +50,12 @@ export function FeatureSection({
               </li>
             ))}
           </ul>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={cta.href} className={cn(buttonVariants({ variant: tone === "red" ? "light" : "primary", size: "md" }))}>
+          <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
+            <Link href={cta.href} className={cn(buttonVariants({ variant: tone === "red" ? "light" : "primary", size: "md" }), "w-full sm:w-auto")}>
               {cta.label}
             </Link>
             {secondaryCta && (
-              <Link href={secondaryCta.href} className={cn(buttonVariants({ variant: tone === "red" ? "outlineLight" : "outline", size: "md" }))}>
+              <Link href={secondaryCta.href} className={cn(buttonVariants({ variant: tone === "red" ? "outlineLight" : "outline", size: "md" }), "w-full sm:w-auto")}>
                 {secondaryCta.label}
               </Link>
             )}

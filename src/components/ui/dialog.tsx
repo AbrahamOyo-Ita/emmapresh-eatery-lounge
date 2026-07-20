@@ -24,11 +24,12 @@ export function Dialog({ open, onClose, title, children, widthClassName = "max-w
   React.useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const previousOverflow = document.body.style.overflow;
     document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", handleKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
   }, [open, onClose]);
 
@@ -37,7 +38,7 @@ export function Dialog({ open, onClose, title, children, widthClassName = "max-w
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -55,7 +56,7 @@ export function Dialog({ open, onClose, title, children, widthClassName = "max-w
             aria-modal="true"
             aria-label={title}
             className={cn(
-              "relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-card border border-white/40 bg-white/60 shadow-2xl backdrop-blur-2xl",
+              "relative z-10 max-h-[92dvh] w-full overflow-y-auto rounded-t-2xl border border-white/40 bg-white/95 shadow-2xl backdrop-blur-2xl sm:max-h-[90vh] sm:rounded-card sm:bg-white/60",
               widthClassName
             )}
           >

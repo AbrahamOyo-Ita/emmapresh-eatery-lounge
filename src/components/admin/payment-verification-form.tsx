@@ -52,7 +52,7 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border p-3">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-border p-3">
         {receipt.fileType === "application/pdf" ? (
           <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-cream-soft">
             <FileText className="h-6 w-6 text-body" aria-hidden="true" />
@@ -98,9 +98,9 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
             <Label htmlFor="rejection-reason">Rejection Reason</Label>
             <Textarea id="rejection-reason" value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)} placeholder="E.g. amount does not match, receipt unclear..." />
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
-            <Button variant="primary" className="bg-error hover:bg-error/90" onClick={handleReject}>Confirm Rejection</Button>
+          <div className="grid gap-2 sm:flex">
+            <Button className="w-full sm:w-auto" variant="outline" onClick={() => setShowReject(false)}>Cancel</Button>
+            <Button className="w-full bg-error hover:bg-error/90 sm:w-auto" variant="primary" onClick={handleReject}>Confirm Rejection</Button>
           </div>
         </div>
       ) : (
@@ -123,12 +123,12 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
             <Label htmlFor="verification-note">Verification Note (optional)</Label>
             <Textarea id="verification-note" value={note} onChange={(e) => setNote(e.target.value)} />
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowReject(true)}>
+          <div className="grid gap-2 sm:flex">
+            <Button className="w-full sm:w-auto" variant="outline" onClick={() => setShowReject(true)}>
               <XCircle className="h-4 w-4" aria-hidden="true" />
               Reject
             </Button>
-            <Button onClick={handleApprove}>
+            <Button className="w-full sm:w-auto" onClick={handleApprove}>
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               Approve Payment
             </Button>

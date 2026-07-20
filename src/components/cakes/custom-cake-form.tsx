@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, UploadCloud, X } from "lucide-react";
 import { Input, Label, FieldError, Textarea, Select } from "@/components/ui/input";
@@ -23,14 +23,14 @@ export function CustomCakeForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<CustomCakeRequestFormValues>({
     resolver: zodResolver(customCakeRequestSchema),
     defaultValues: { fulfilmentMethod: "pickup", layers: 1 },
   });
 
-  const fulfilmentMethod = watch("fulfilmentMethod");
+  const fulfilmentMethod = useWatch({ control, name: "fulfilmentMethod" });
 
   function handleFiles(files: FileList | null) {
     if (!files) return;

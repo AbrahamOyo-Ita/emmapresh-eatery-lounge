@@ -30,6 +30,19 @@ assert.match(read("src/lib/admin-auth.ts"), /Staff access required/, "admin API 
 assert.match(read("src/app/api/admin/snapshot/route.ts"), /requireStaffAccess/, "snapshot route must require staff access");
 assert.match(read("src/app/api/admin/update/route.ts"), /requireStaffAccess/, "update route must require staff access");
 
+const adminLayout = read("src/app/admin/layout.tsx");
+const adminSidebar = read("src/components/admin/admin-sidebar.tsx");
+assert.match(adminLayout, /onMenuClick=\{\(\) => setMobileNavOpen\(true\)\}/, "admin hamburger must open mobile navigation");
+assert.match(adminSidebar, /aria-modal="true"/, "mobile admin navigation must be an accessible modal");
+assert.match(adminSidebar, /Escape/, "mobile admin navigation must close with Escape");
+
+const promotionsAdmin = read("src/app/admin/promotions/page.tsx");
+assert.doesNotMatch(promotionsAdmin, /<Button[^>]*disabled[^>]*>\s*<Plus/, "new promotion action must remain functional");
+assert.match(promotionsAdmin, /addPromotion/, "admin must persist newly created promotions");
+
+const footer = read("src/components/layout/footer.tsx");
+assert.match(footer, /onSubmit=\{subscribe\}/, "newsletter form must have a working submit handler");
+
 const receiptUpload = read("src/components/checkout/receipt-upload.tsx");
 assert.match(receiptUpload, /\/api\/uploads/, "receipt upload must use the upload API");
 assert.match(receiptUpload, /storagePath/, "receipt upload must return a storage path");

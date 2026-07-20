@@ -71,6 +71,40 @@ body {
   line-height: 1.55;
 }
 
+html {
+  min-width: 320px;
+  overflow-x: hidden;
+  scroll-padding-top: 5rem;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+}
+
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 639px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  .admin-content table {
+    min-width: 46rem;
+  }
+
+  .admin-content th,
+  .admin-content td {
+    white-space: nowrap;
+  }
+
+  .admin-content td:first-child,
+  .admin-content th:first-child {
+    white-space: normal;
+  }
+}
+
 ::selection {
   background: var(--color-primary-red);
   color: var(--color-white);

@@ -48,11 +48,11 @@ function AdminOrdersContent() {
       </div>
 
       <div className="mb-4 flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[220px]">
+        <div className="relative min-w-0 flex-[1_1_100%] sm:min-w-[220px] sm:flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-body" aria-hidden="true" />
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search reference or customer..." className="pl-10" />
         </div>
-        <Select value={branchFilter} onChange={(e) => setBranchFilter(e.target.value as BranchSlug | "all")} className="w-auto" aria-label="Filter by branch">
+        <Select value={branchFilter} onChange={(e) => setBranchFilter(e.target.value as BranchSlug | "all")} className="w-full sm:w-auto" aria-label="Filter by branch">
           <option value="all">All Branches</option>
           {branches.map((b) => (
             <option key={b.slug} value={b.slug}>
@@ -60,7 +60,7 @@ function AdminOrdersContent() {
             </option>
           ))}
         </Select>
-        <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "all")} className="w-auto" aria-label="Filter by status">
+        <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "all")} className="w-full sm:w-auto" aria-label="Filter by status">
           <option value="all">All Statuses</option>
           {(
             [

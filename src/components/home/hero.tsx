@@ -73,7 +73,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <motion.div
           initial={reduceMotion ? undefined : "hidden"}
           animate={reduceMotion ? undefined : "show"}
@@ -84,20 +84,20 @@ export function Hero() {
             <Flame className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
             Abuja · Lagos · Badagry
           </motion.span>
-          <motion.h1 variants={itemVariants} className="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.02] text-white sm:text-5xl lg:text-6xl">
+          <motion.h1 variants={itemVariants} className="mt-5 max-w-2xl font-display text-[clamp(2.25rem,11vw,3.75rem)] font-semibold leading-[1.02] text-white">
             Good Food, Cakes, Catering &amp; Events,
-            <span className="block whitespace-nowrap text-primary">All in One Place</span>
+            <span className="block text-primary sm:whitespace-nowrap">All in One Place</span>
           </motion.h1>
           <motion.p variants={itemVariants} className="mt-5 max-w-lg text-sm leading-7 text-white/76">
             Order meals, plan catering, book custom cakes, reserve event spaces and learn professional cooking in one connected EmmaPresh experience.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="mt-7 flex flex-wrap items-center gap-3">
-            <Link href="/menu" className={cn(buttonVariants({ variant: "primary", size: "lg" }))}>
+          <motion.div variants={itemVariants} className="mt-7 grid gap-3 sm:flex sm:flex-wrap sm:items-center">
+            <Link href="/menu" className={cn(buttonVariants({ variant: "primary", size: "lg" }), "w-full sm:w-auto")}>
               Order Food
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            <Link href="/catering" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "border-white/50 bg-white/8 text-white hover:bg-white hover:text-charcoal")}>
+            <Link href="/catering" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full border-white/50 bg-white/8 text-white hover:bg-white hover:text-charcoal sm:w-auto")}>
               Explore Services
             </Link>
           </motion.div>

@@ -59,7 +59,7 @@ export default function AdminOrderDetailPage() {
           <h1 className="font-display text-2xl text-charcoal">{order.reference}</h1>
           <p className="mt-1 text-sm text-body">Placed {new Date(order.createdAt).toLocaleString()} · {branch.name}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <OrderStatusBadge status={order.status} />
           <PaymentStatusBadge status={order.payment.status} />
         </div>
@@ -71,15 +71,15 @@ export default function AdminOrderDetailPage() {
             <h2 className="mb-3 font-display text-base text-charcoal">Items</h2>
             <ul className="divide-y divide-border">
               {order.items.map((item) => (
-                <li key={item.cartItemId} className="flex items-center justify-between py-2.5 text-sm">
-                  <div>
+                <li key={item.cartItemId} className="flex items-start justify-between gap-3 py-2.5 text-sm">
+                  <div className="min-w-0">
                     <p className="text-charcoal">{item.quantity} × {item.name}</p>
                     {item.selectedOptions.length > 0 && (
                       <p className="text-xs text-body">{item.selectedOptions.map((o) => o.choiceLabel).join(", ")}</p>
                     )}
                     {item.specialInstructions && <p className="text-xs italic text-body">Note: {item.specialInstructions}</p>}
                   </div>
-                  <span className="font-semibold text-charcoal">{formatCurrency(item.lineTotal)}</span>
+                  <span className="shrink-0 font-semibold text-charcoal">{formatCurrency(item.lineTotal)}</span>
                 </li>
               ))}
             </ul>
@@ -117,7 +117,7 @@ export default function AdminOrderDetailPage() {
             <h2 className="mb-3 font-display text-base text-charcoal">Status History</h2>
             <ul className="space-y-2 text-sm">
               {order.statusHistory.map((event, i) => (
-                <li key={i} className="flex items-center justify-between text-body">
+                <li key={i} className="flex flex-col gap-1 text-body sm:flex-row sm:items-center sm:justify-between">
                   <span className="capitalize text-charcoal">{event.status.replace(/-/g, " ")}</span>
                   <span>{new Date(event.timestamp).toLocaleString()}</span>
                 </li>
@@ -133,7 +133,7 @@ export default function AdminOrderDetailPage() {
             <p className="mt-2 flex items-center gap-1.5 text-sm text-body">
               <Phone className="h-3.5 w-3.5" aria-hidden="true" /> {order.customer.phone}
             </p>
-            <p className="mt-1 flex items-center gap-1.5 text-sm text-body">
+            <p className="mt-1 flex min-w-0 items-start gap-1.5 break-all text-sm text-body">
               <Mail className="h-3.5 w-3.5" aria-hidden="true" /> {order.customer.email}
             </p>
           </div>

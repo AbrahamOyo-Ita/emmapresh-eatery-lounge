@@ -40,7 +40,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const [open, setOpen] = React.useState(false);
     const [visibleMonth, setVisibleMonth] = React.useState(() => {
       const selectedDate = currentValue ? new Date(`${currentValue}T00:00:00`) : null;
-      return selectedDate && !Number.isNaN(selectedDate.getTime()) ? selectedDate : new Date(2026, 6, 1);
+      return selectedDate && !Number.isNaN(selectedDate.getTime()) ? selectedDate : new Date();
     });
     const rootRef = React.useRef<HTMLSpanElement>(null);
 
@@ -91,7 +91,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <CalendarDays className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           </button>
           {open && (
-            <div className="absolute z-50 mt-2 w-72 rounded-card border border-border bg-white p-3 shadow-[0_18px_45px_-24px_rgba(23,23,23,0.45)]">
+            <div className="absolute left-0 z-50 mt-2 w-[min(18rem,calc(100vw-2rem))] rounded-card border border-border bg-white p-3 shadow-[0_18px_45px_-24px_rgba(23,23,23,0.45)]">
               <div className="mb-3 flex items-center justify-between">
                 <button type="button" className="focus-ring rounded-full p-1.5 text-body hover:bg-cream-soft hover:text-charcoal" onClick={() => setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))} aria-label="Previous month">
                   <ChevronLeft className="h-4 w-4" aria-hidden="true" />

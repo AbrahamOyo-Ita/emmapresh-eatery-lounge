@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Bike, Store, UtensilsCrossed, Check, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Input, Label, FieldError, Textarea, Select } from "@/components/ui/input";
@@ -37,7 +37,7 @@ export function CheckoutForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     trigger,
     formState: { errors },
@@ -52,8 +52,8 @@ export function CheckoutForm() {
     },
   });
 
-  const fulfilmentMethod = watch("fulfilmentMethod");
-  const paymentMethod = watch("paymentMethod");
+  const fulfilmentMethod = useWatch({ control, name: "fulfilmentMethod" });
+  const paymentMethod = useWatch({ control, name: "paymentMethod" });
 
   const subtotalAmount = subtotal();
   const deliveryFee = fulfilmentMethod === "delivery" ? branch.deliveryFee : 0;
@@ -326,7 +326,7 @@ export function CheckoutForm() {
             </div>
           )}
 
-          <div className="mt-8 flex items-center justify-between">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
             {stepIndex > 0 ? (
               <Button type="button" variant="outline" onClick={goBack}>
                 <ChevronLeft className="h-4 w-4" aria-hidden="true" />

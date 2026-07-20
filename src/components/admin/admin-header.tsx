@@ -43,8 +43,8 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
   const initials = email ? email.slice(0, 2).toUpperCase() : "SA";
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-white px-4 sm:px-6">
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-2 border-b border-border bg-white/95 px-3 py-2 backdrop-blur sm:px-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <button
           onClick={onMenuClick}
           className="focus-ring flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5 lg:hidden"
@@ -52,12 +52,12 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           <MenuIcon className="h-5 w-5" aria-hidden="true" />
         </button>
-        <div>
+        <div className="min-w-0">
           <p className="text-xs text-body">Welcome back,</p>
-          <p className="truncate text-sm font-semibold text-charcoal">{email ?? "Staff"}</p>
+          <p className="max-w-32 truncate text-sm font-semibold text-charcoal sm:max-w-64">{email ?? "Staff"}</p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-3">
         <Link
           href="/admin/orders?status=order-created"
           className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5"
@@ -73,7 +73,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick?: () => void }) {
         <Link href="/" className="focus-ring hidden text-xs font-semibold text-body hover:text-primary sm:block">
           View Storefront →
         </Link>
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+        <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary sm:flex">
           {initials}
         </span>
         <button

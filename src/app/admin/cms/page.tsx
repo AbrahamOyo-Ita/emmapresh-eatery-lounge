@@ -139,11 +139,11 @@ export default function AdminCmsPage() {
 
       <section className="rounded-2xl border border-border/60 bg-white">
         <div className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-4">
-          <div className="relative min-w-64 flex-1">
+          <div className="relative min-w-0 flex-[1_1_100%] sm:min-w-64 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-body" aria-hidden="true" />
             <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search content" className="pl-10" />
           </div>
-          <Select value={status} onChange={(event) => setStatus(event.target.value as CmsStatus | "all")} className="w-auto min-w-40">
+          <Select value={status} onChange={(event) => setStatus(event.target.value as CmsStatus | "all")} className="w-full sm:w-auto sm:min-w-40">
             <option value="all">All status</option>
             {statuses.map((item) => <option key={item} value={item}>{item}</option>)}
           </Select>

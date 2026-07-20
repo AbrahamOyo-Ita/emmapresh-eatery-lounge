@@ -1,17 +1,36 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PhoneCall, Mail, MapPin } from "lucide-react";
+import { CheckCircle2, PhoneCall, Mail, MapPin } from "lucide-react";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/ui/social-icons";
 import { Logo } from "./logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { footerLinks, siteConfig } from "@/config/site";
 import { branches } from "@/data/branches";
+import { useContactStore } from "@/stores/contact-store";
 
 export function Footer() {
   const pathname = usePathname();
+  const sendMessage = useContactStore((state) => state.sendMessage);
+  const [subscriberEmail, setSubscriberEmail] = React.useState("");
+  const [subscribed, setSubscribed] = React.useState(false);
+
+  function subscribe(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const email = subscriberEmail.trim();
+    if (!email) return;
+    sendMessage({
+      name: "Newsletter subscriber",
+      email,
+      subject: "Newsletter subscription",
+      message: "Please add this email address to EmmaPresh news and offers updates.",
+    });
+    setSubscribed(true);
+    setSubscriberEmail("");
+  }
   if (pathname?.startsWith("/admin")) return null;
 
   return (
@@ -24,10 +43,7 @@ export function Footer() {
               Be first to know about new cakes in stock, academy intakes and weekend offers.
             </p>
           </div>
-          <form
-            className="flex flex-col gap-3 sm:flex-row"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start" onSubmit={subscribe}>
             <label htmlFor="footer-email" className="sr-only">
               Email address
             </label>
@@ -36,11 +52,14 @@ export function Footer() {
               type="email"
               required
               placeholder="Enter your email"
+              value={subscriberEmail}
+              onChange={(event) => { setSubscriberEmail(event.target.value); setSubscribed(false); }}
               className="border-white/20 bg-white/10 text-white placeholder:text-white/40"
             />
             <Button type="submit" variant="accent">
-              Subscribe
+              {subscribed ? <><CheckCircle2 className="h-4 w-4" aria-hidden="true" /> Subscribed</> : "Subscribe"}
             </Button>
+            <span className="sr-only" aria-live="polite">{subscribed ? "Subscription received" : ""}</span>
           </form>
         </div>
 
@@ -91,14 +110,13 @@ export function Footer() {
           <div>
             <h4 className="font-display text-sm uppercase tracking-wide text-white">Get in Touch</h4>
             <ul className="mt-4 space-y-2.5 text-sm">
-              <li className="flex items-center gap-1.5 text-white/60">
+              <li className="flex items-start gap-1.5 text-white/60">
                 <PhoneCall className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                {siteConfig.phone}
-                {` / ${siteConfig.secondaryPhone}`}
+                <span><a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`} className="hover:text-white">{siteConfig.phone}</a><br /><a href={`tel:${siteConfig.secondaryPhone.replace(/\s/g, "")}`} className="hover:text-white">{siteConfig.secondaryPhone}</a></span>
               </li>
-              <li className="flex items-center gap-1.5 text-white/60">
+              <li className="flex min-w-0 items-start gap-1.5 text-white/60">
                 <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                {siteConfig.email}
+                <a href={`mailto:${siteConfig.email}`} className="min-w-0 break-all hover:text-white">{siteConfig.email}</a>
               </li>
             </ul>
             <h4 className="mt-5 font-display text-sm uppercase tracking-wide text-white">Policies</h4>
