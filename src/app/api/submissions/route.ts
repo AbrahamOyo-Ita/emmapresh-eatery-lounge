@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { notify } from "@/lib/notifications";
+import { siteConfig } from "@/config/site";
 import {
   academyApplicationToRow,
   cakeRequestToRow,
@@ -31,6 +32,7 @@ type NotificationPayload = {
   reference?: string;
   email?: string;
   customer?: { email?: string };
+  status?: string;
 };
 
 function toRow(entity: string, payload: unknown) {
@@ -60,14 +62,23 @@ function notificationFor(entity: string, payload: NotificationPayload) {
   const reference = payload.reference ?? payload.id;
   const customerEmail = payload.customer?.email ?? payload.email;
   if (!customerEmail || !reference) return null;
-  const subject = entity === "orders" ? `Order ${reference} received` : `EmmaPresh request ${reference} received`;
+  const isReceipt = entity === "orders" && payload.status === "payment-submitted";
+  const subject = isReceipt
+    ? `Payment receipt received — ${reference}`
+    : entity === "orders"
+      ? `Order ${reference} received`
+      : `EmmaPresh request ${reference} received`;
   return {
     channel: "email" as const,
     recipient: customerEmail,
     subject,
-    message: `We received your ${entity.replace("-", " ")} request. Reference: ${reference}.`,
+    message: isReceipt
+      ? `We received the payment receipt for order ${reference}. Our finance team will review it and email you when verification is complete.`
+      : `Thank you for choosing EmmaPresh. We received your ${entity.replace("-", " ")} request.\n\nReference: ${reference}. Keep this reference for tracking and support.`,
     entityType: entity,
     entityReference: reference,
+    actionUrl: entity === "orders" ? `${siteConfig.url}/orders/${reference}` : undefined,
+    actionLabel: entity === "orders" ? "Track your order" : undefined,
   };
 }
 
@@ -80,17 +91,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Unsupported entity" }, { status: 400 });
   }
 
-  if (!hasSupabaseEnv()) {
-    return NextResponse.json({ ok: true, skipped: "supabase-env-missing" });
-  }
-
-  const supabase = createAdminClient();
-  const { error } = await supabase.from(table as never).upsert(row as never);
-  if (error) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  if (hasSupabaseEnv()) {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from(table as never).upsert(row as never);
+    if (error) {
+      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+    }
   }
 
   const notification = notificationFor(entity, payload as NotificationPayload);
   if (notification) await notify(notification);
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, persisted: hasSupabaseEnv() });
 }

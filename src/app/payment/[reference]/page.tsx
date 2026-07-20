@@ -131,9 +131,9 @@ export default function PaymentPage() {
             </p>
             <ReceiptUpload
               reference={order.reference}
-              onSubmit={(receipt) => {
-                submitReceipt(order.reference, { ...receipt, uploadedAt: new Date().toISOString() });
-              }}
+              onSubmit={(receipt) =>
+                submitReceipt(order.reference, { ...receipt, uploadedAt: new Date().toISOString() })
+              }
             />
           </div>
         </>

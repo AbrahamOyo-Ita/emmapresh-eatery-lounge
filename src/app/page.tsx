@@ -66,7 +66,7 @@ export default async function HomePage() {
         cta={{ label: "Request a Quote", href: "/catering/request-quote" }}
         secondaryCta={{ label: "See Packages", href: "/catering" }}
         icon="event"
-        image="/food in litres copy.jpeg"
+        image="/Indoor & Outdoor copy.jpeg"
       />
 
       <FeatureSection

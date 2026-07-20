@@ -151,3 +151,13 @@ etc.) — change them there to re-skin the whole product. The logo is a text wor
 (`src/components/layout/logo.tsx`) designed to be swapped for a real logo file later. The favicon/app
 icons are generated dynamically (`src/app/icon.tsx`, `apple-icon.tsx`, `icons/192`, `icons/512`) — no
 static image files to manage until you have real brand assets.
+
+## Transactional email
+
+Email is sent server-side through Nodemailer and Gmail SMTP. Copy `.env.example` to `.env.local`, enable 2-Step Verification on the Google account, create a Google App Password for Mail, and set `GMAIL_USER` plus `GMAIL_APP_PASSWORD`. The app password may include spaces; the mailer removes them before authentication.
+
+The reusable mailer is in `src/lib/email.ts`. It includes a pooled TLS connection, address and header validation, branded responsive HTML with a plain-text fallback, connection timeouts, retry with exponential backoff for transient SMTP failures, and delivery metadata. Customer submission and admin order-update emails flow through `src/lib/notifications.ts`.
+
+After signing in as a staff user, request `GET /api/admin/email/verify` to verify the SMTP login without sending a message. A successful response is `{ "ok": true }`. Keep App Passwords only in `.env.local` and in the deployment provider's encrypted environment settings; revoke and replace one immediately if it is exposed.
+
+Gmail is suitable for low-to-moderate transactional traffic, but Google enforces sending limits. For sustained bulk automation, keep the `sendEmail` interface and replace the transport with a dedicated transactional provider.

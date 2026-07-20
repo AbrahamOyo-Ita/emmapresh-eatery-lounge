@@ -34,7 +34,7 @@ interface OrdersState {
   setOrders: (orders: Order[]) => void;
   createOrder: (input: CreateOrderInput) => Order;
   getOrderByReference: (reference: string) => Order | undefined;
-  submitReceipt: (reference: string, receipt: NonNullable<Order["payment"]["receipt"]>) => void;
+  submitReceipt: (reference: string, receipt: NonNullable<Order["payment"]["receipt"]>) => Promise<void>;
   verifyPayment: (
     reference: string,
     approve: boolean,
@@ -90,18 +90,18 @@ export const useOrdersStore = create<OrdersState>()(
         return order;
       },
       getOrderByReference: (reference) => get().orders.find((o) => o.reference === reference),
-      submitReceipt: (reference, receipt) => {
+      submitReceipt: async (reference, receipt) => {
+        const existing = get().getOrderByReference(reference);
+        if (!existing) return;
+        const statusUpdated = pushStatus(existing, "payment-submitted", "Customer uploaded payment receipt");
+        const updatedOrder: Order = {
+          ...statusUpdated,
+          payment: { ...statusUpdated.payment, status: "payment-submitted", receipt },
+        };
         set({
-          orders: get().orders.map((order) => {
-            if (order.reference !== reference) return order;
-            const updated = pushStatus(order, "payment-submitted", "Customer uploaded payment receipt");
-            return {
-              ...updated,
-              payment: { ...updated.payment, status: "payment-submitted", receipt },
-            };
-          }),
+          orders: get().orders.map((order) => (order.reference === reference ? updatedOrder : order)),
         });
-        patchEntity("orders", reference, { status: "payment-submitted", payment: get().getOrderByReference(reference)?.payment });
+        await persistEntity("orders", updatedOrder);
       },
       verifyPayment: (reference, approve, verification) => {
         set({

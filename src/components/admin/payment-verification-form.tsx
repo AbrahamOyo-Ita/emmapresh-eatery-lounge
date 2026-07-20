@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FileText, CheckCircle2, XCircle } from "lucide-react";
+import { FileText, CheckCircle2, ExternalLink, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useOrdersStore } from "@/stores/orders-store";
@@ -45,24 +45,39 @@ export function PaymentVerificationForm({ order }: { order: Order }) {
   }
 
   const alreadyProcessed = order.payment.status === "payment-verified" || order.payment.status === "payment-rejected";
+  const receipt = order.payment.receipt;
+  const receiptHref = receipt.storagePath
+    ? `/api/admin/receipt?path=${encodeURIComponent(receipt.storagePath)}`
+    : receipt.url || receipt.dataUrl;
 
   return (
     <div>
       <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border p-3">
-        {order.payment.receipt.fileType === "application/pdf" ? (
+        {receipt.fileType === "application/pdf" ? (
           <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-cream-soft">
             <FileText className="h-6 w-6 text-body" aria-hidden="true" />
           </span>
-        ) : order.payment.receipt.dataUrl ? (
+        ) : receipt.dataUrl || receipt.url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={order.payment.receipt.dataUrl} alt="Payment receipt" className="h-14 w-14 rounded-xl object-cover" />
+          <img src={receipt.dataUrl || receipt.url} alt="Payment receipt" className="h-14 w-14 rounded-xl object-cover" />
         ) : (
           <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-cream-soft text-xs text-body">No preview</span>
         )}
-        <div>
-          <p className="text-sm font-semibold text-charcoal">{order.payment.receipt.fileName}</p>
-          <p className="text-xs text-body">Uploaded {new Date(order.payment.receipt.uploadedAt).toLocaleString()}</p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-charcoal">{receipt.fileName}</p>
+          <p className="text-xs text-body">Uploaded {new Date(receipt.uploadedAt).toLocaleString()}</p>
         </div>
+        {receiptHref && (
+          <a
+            href={receiptHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="focus-ring inline-flex shrink-0 items-center gap-1.5 rounded-full bg-charcoal px-3 py-2 text-xs font-semibold text-white hover:bg-soft-black"
+          >
+            Open receipt
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        )}
       </div>
 
       {alreadyProcessed ? (

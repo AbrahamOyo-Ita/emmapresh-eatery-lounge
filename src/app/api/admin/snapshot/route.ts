@@ -43,6 +43,16 @@ export async function GET() {
     supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
   ]);
 
+  const failures = [orders, catering, cakeRequests, academy, halls, reservations, mealPlans, contact]
+    .map((result) => result.error?.message)
+    .filter((message): message is string => Boolean(message));
+  if (failures.length > 0) {
+    return NextResponse.json(
+      { ok: false, error: "Unable to load the admin snapshot", details: failures },
+      { status: 500 }
+    );
+  }
+
   return NextResponse.json({
     ok: true,
     data: {

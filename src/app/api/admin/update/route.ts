@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { requireStaffAccess } from "@/lib/admin-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
+import { notify } from "@/lib/notifications";
+import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +38,31 @@ export async function POST(request: Request) {
   if (denied) return denied;
 
   const supabase = createAdminClient();
-  const { error } = await supabase.from(target.table).update(toRowPatch(patch)).eq(target.key, id);
+  const { data, error } = await supabase.from(target.table).update(toRowPatch(patch)).eq(target.key, id).select("*").maybeSingle();
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+
+  if (entity === "orders" && data?.customer?.email && ("status" in patch || "payment" in patch)) {
+    const paymentStatus = data.payment?.status as string | undefined;
+    const status = String(data.status ?? patch.status ?? "updated");
+    const paymentMessage = paymentStatus === "payment-verified"
+      ? "Your payment has been verified successfully. Your order is now confirmed and will move to preparation."
+      : paymentStatus === "payment-rejected"
+        ? `We could not verify your payment receipt. ${data.payment?.verification?.rejectionReason ?? "Please contact us or upload a clearer receipt."}`
+        : null;
+    await notify({
+      channel: "email",
+      recipient: data.customer.email,
+      subject: paymentStatus === "payment-verified"
+        ? `Payment confirmed — ${id}`
+        : paymentStatus === "payment-rejected"
+          ? `Payment needs attention — ${id}`
+          : `Order update — ${id}`,
+      message: paymentMessage ?? `Your order ${id} status is now: ${status.replace(/-/g, " ")}.`,
+      entityType: "orders",
+      entityReference: id,
+      actionUrl: `${siteConfig.url}/orders/${id}`,
+      actionLabel: "View order status",
+    });
+  }
   return NextResponse.json({ ok: true });
 }
