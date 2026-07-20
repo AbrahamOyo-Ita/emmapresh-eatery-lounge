@@ -10,6 +10,9 @@ import { useMealPlansStore } from "@/stores/meal-plans-store";
 import { useOrdersStore } from "@/stores/orders-store";
 import { useReservationsStore } from "@/stores/reservations-store";
 import type { Order } from "@/types";
+import { useCrmStore } from "@/stores/crm-store";
+import { useProjectsStore } from "@/stores/projects-store";
+import { usePromotionsStore } from "@/stores/promotions-store";
 
 function mergeOrders(localOrders: Order[], serverOrders: Order[]) {
   const merged = new Map(localOrders.map((order) => [order.reference, order]));
@@ -33,6 +36,9 @@ export function BackendHydration() {
   const setReservations = useReservationsStore((s) => s.setReservations);
   const setMealPlans = useMealPlansStore((s) => s.setSubscriptions);
   const setContact = useContactStore((s) => s.setMessages);
+  const hydrateCrm = useCrmStore((s) => s.hydrate);
+  const setProjectCards = useProjectsStore((s) => s.setCards);
+  const setPromotions = usePromotionsStore((s) => s.setPromotions);
 
   React.useEffect(() => {
     let active = true;
@@ -55,10 +61,22 @@ export function BackendHydration() {
       }
     }
     void hydrate();
+    fetch("/api/admin/workspace", { cache: "no-store" }).then((response) => response.json()).then((workspace) => {
+      if (!active || !workspace.ok || !workspace.data) return;
+      const data = workspace.data;
+      hydrateCrm({
+        profileOverrides: (data.profiles ?? []).map((row: Record<string, unknown>) => ({ email: row.email, stage: row.stage, tags: row.tags ?? [], owner: row.owner })),
+        notes: (data.notes ?? []).map((row: Record<string, unknown>) => ({ id: row.id, customerEmail: row.customer_email, body: row.body, author: row.author, createdAt: row.created_at })),
+        tasks: (data.tasks ?? []).map((row: Record<string, unknown>) => ({ id: row.id, customerEmail: row.customer_email, title: row.title, dueDate: row.due_date, status: row.status, owner: row.owner, createdAt: row.created_at })),
+        deals: (data.deals ?? []).map((row: Record<string, unknown>) => ({ id: row.id, customerEmail: row.customer_email, title: row.title, value: Number(row.value), stage: row.stage, expectedCloseDate: row.expected_close_date ?? "", createdAt: row.created_at })),
+      } as Parameters<typeof hydrateCrm>[0]);
+      setProjectCards((data.projectCards ?? []).map((row: Record<string, unknown>) => ({ id: row.id, title: row.title, description: row.description, status: row.status, priority: row.priority, owner: row.owner, dueDate: row.due_date ?? "", labels: row.labels ?? [], position: Number(row.position) })) as Parameters<typeof setProjectCards>[0]);
+      setPromotions((data.promotions ?? []).map((row: Record<string, unknown>) => ({ id: row.id, title: row.title, description: row.description, code: row.code, discount: row.discount, validUntil: row.valid_until })) as Parameters<typeof setPromotions>[0]);
+    }).catch(() => undefined);
     return () => {
       active = false;
     };
-  }, [setAcademy, setCakeRequests, setCatering, setContact, setHalls, setMealPlans, setOrders, setReservations]);
+  }, [hydrateCrm, setAcademy, setCakeRequests, setCatering, setContact, setHalls, setMealPlans, setOrders, setProjectCards, setPromotions, setReservations]);
 
   return null;
 }

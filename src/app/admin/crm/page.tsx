@@ -10,7 +10,7 @@ import { useCakeRequestsStore } from "@/stores/cake-requests-store";
 import { useAcademyStore } from "@/stores/academy-store";
 import { useHallsStore } from "@/stores/halls-store";
 import { useReservationsStore } from "@/stores/reservations-store";
-import { useCrmStore, type CrmStage } from "@/stores/crm-store";
+import { useCrmStore, type CrmDealStage, type CrmStage } from "@/stores/crm-store";
 import { buildCrmCustomers } from "@/lib/admin/crm";
 import { cn, formatCurrency } from "@/lib/utils";
 
@@ -34,6 +34,7 @@ export default function AdminCrmPage() {
   const [hydrated, setHydrated] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [stage, setStage] = React.useState<CrmStage | "all">("all");
+  const [draggedDeal, setDraggedDeal] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const frame = window.requestAnimationFrame(() => setHydrated(true));
@@ -88,6 +89,19 @@ export default function AdminCrmPage() {
             <p className="text-xs font-bold uppercase tracking-wide text-body">{metric.label}</p>
           </div>
         ))}
+      </section>
+
+      <section className="mb-6 rounded-2xl border border-border/60 bg-white p-5">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><h2 className="font-display text-base text-charcoal">Sales Pipeline</h2><p className="mt-1 text-xs text-body">Drag deals between stages to keep revenue forecasting current.</p></div><span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">{crm.deals.length} deals</span></div>
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          {(["new-lead","qualified","proposal-sent","won","lost"] as CrmDealStage[]).map((dealStage) => {
+            const stageDeals = crm.deals.filter((deal) => deal.stage === dealStage);
+            return <div key={dealStage} onDragOver={(event) => event.preventDefault()} onDrop={() => { if (draggedDeal) crm.updateDealStage(draggedDeal, dealStage); setDraggedDeal(null); }} className="min-h-36 w-60 shrink-0 rounded-xl bg-cream-soft/60 p-3">
+              <div className="mb-3 flex items-center justify-between"><p className="text-xs font-bold uppercase tracking-wide text-body">{dealStage.replace(/-/g," ")}</p><span className="text-xs font-bold text-charcoal">{formatCurrency(stageDeals.reduce((sum,deal)=>sum+deal.value,0))}</span></div>
+              <div className="space-y-2">{stageDeals.map((deal) => <article key={deal.id} draggable onDragStart={() => setDraggedDeal(deal.id)} className="cursor-grab rounded-lg border border-border/60 bg-white p-3 shadow-[var(--shadow-soft)]"><p className="text-sm font-semibold text-charcoal">{deal.title}</p><p className="mt-1 truncate text-xs text-body">{deal.customerEmail}</p><p className="mt-2 font-bold text-primary">{formatCurrency(deal.value)}</p></article>)}</div>
+            </div>;
+          })}
+        </div>
       </section>
 
       <section className="mb-6 grid gap-4 lg:grid-cols-[1fr_360px]">

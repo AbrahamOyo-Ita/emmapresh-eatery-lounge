@@ -46,6 +46,7 @@ interface CrmState {
   notes: CrmNote[];
   tasks: CrmTask[];
   deals: CrmDeal[];
+  hydrate: (data: { profileOverrides: CrmProfileOverride[]; notes: CrmNote[]; tasks: CrmTask[]; deals: CrmDeal[] }) => void;
   setProfileOverride: (email: string, patch: Partial<Omit<CrmProfileOverride, "email">>) => void;
   addNote: (input: Omit<CrmNote, "id" | "createdAt">) => void;
   addTask: (input: Omit<CrmTask, "id" | "status" | "createdAt">) => void;
@@ -92,28 +93,26 @@ export const useCrmStore = create<CrmState>()(
           createdAt: "2026-07-15T09:00:00.000Z",
         },
       ],
+      hydrate: (data) => set(data),
       setProfileOverride: (email, patch) => {
         const existing = get().profileOverrides.find((profile) => profile.email === email);
         const next = existing
           ? get().profileOverrides.map((profile) => (profile.email === email ? { ...profile, ...patch } : profile))
           : [...get().profileOverrides, { email, stage: "active" as CrmStage, tags: [], owner: "Unassigned", ...patch }];
         set({ profileOverrides: next });
+        const profile = next.find((item) => item.email === email)!;
+        void workspaceMutation("crm_profiles", { email: profile.email, stage: profile.stage, tags: profile.tags, owner: profile.owner, updated_at: new Date().toISOString() });
       },
-      addNote: (input) =>
-        set({
-          notes: [{ ...input, id: generateId("note"), createdAt: new Date().toISOString() }, ...get().notes],
-        }),
-      addTask: (input) =>
-        set({
-          tasks: [{ ...input, id: generateId("task"), status: "open", createdAt: new Date().toISOString() }, ...get().tasks],
-        }),
-      updateTaskStatus: (id, status) => set({ tasks: get().tasks.map((task) => (task.id === id ? { ...task, status } : task)) }),
-      addDeal: (input) =>
-        set({
-          deals: [{ ...input, id: generateId("deal"), createdAt: new Date().toISOString() }, ...get().deals],
-        }),
-      updateDealStage: (id, stage) => set({ deals: get().deals.map((deal) => (deal.id === id ? { ...deal, stage } : deal)) }),
+      addNote: (input) => { const note = { ...input, id: generateId("note"), createdAt: new Date().toISOString() }; set({ notes: [note, ...get().notes] }); void workspaceMutation("crm_notes", { id: note.id, customer_email: note.customerEmail, body: note.body, author: note.author, created_at: note.createdAt }); },
+      addTask: (input) => { const task = { ...input, id: generateId("task"), status: "open" as const, createdAt: new Date().toISOString() }; set({ tasks: [task, ...get().tasks] }); void workspaceMutation("crm_tasks", { id: task.id, customer_email: task.customerEmail, title: task.title, due_date: task.dueDate, status: task.status, owner: task.owner, created_at: task.createdAt }); },
+      updateTaskStatus: (id, status) => { const tasks = get().tasks.map((task) => task.id === id ? { ...task, status } : task); set({ tasks }); const task = tasks.find((item) => item.id === id); if (task) void workspaceMutation("crm_tasks", { id: task.id, customer_email: task.customerEmail, title: task.title, due_date: task.dueDate, status: task.status, owner: task.owner, created_at: task.createdAt }); },
+      addDeal: (input) => { const deal = { ...input, id: generateId("deal"), createdAt: new Date().toISOString() }; set({ deals: [deal, ...get().deals] }); void workspaceMutation("crm_deals", { id: deal.id, customer_email: deal.customerEmail, title: deal.title, value: deal.value, stage: deal.stage, expected_close_date: deal.expectedCloseDate || null, created_at: deal.createdAt }); },
+      updateDealStage: (id, stage) => { const deals = get().deals.map((deal) => deal.id === id ? { ...deal, stage } : deal); set({ deals }); const deal = deals.find((item) => item.id === id); if (deal) void workspaceMutation("crm_deals", { id: deal.id, customer_email: deal.customerEmail, title: deal.title, value: deal.value, stage: deal.stage, expected_close_date: deal.expectedCloseDate || null, created_at: deal.createdAt }); },
     }),
     { name: "emmapresh-crm" }
   )
 );
+
+async function workspaceMutation(table: string, data: Record<string, unknown>) {
+  await fetch("/api/admin/workspace", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ table, operation: "upsert", data }) });
+}

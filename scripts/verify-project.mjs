@@ -43,6 +43,12 @@ assert.match(promotionsAdmin, /addPromotion/, "admin must persist newly created 
 const footer = read("src/components/layout/footer.tsx");
 assert.match(footer, /onSubmit=\{subscribe\}/, "newsletter form must have a working submit handler");
 
+assert.ok(existsSync(join(root, "src/app/admin/projects/page.tsx")), "project management board is missing");
+assert.ok(existsSync(join(root, "src/app/api/admin/workspace/route.ts")), "shared CRM/project workspace API is missing");
+assert.match(read("src/app/api/admin/workspace/route.ts"), /requireStaffAccess/, "workspace mutations must require staff access");
+assert.match(read("src/stores/projects-store.ts"), /moveCard/, "project cards must support workflow movement");
+assert.match(read("src/components/offers/offers-list.tsx"), /\/api\/promotions/, "public offers must load backend promotions");
+
 const receiptUpload = read("src/components/checkout/receipt-upload.tsx");
 assert.match(receiptUpload, /\/api\/uploads/, "receipt upload must use the upload API");
 assert.match(receiptUpload, /storagePath/, "receipt upload must return a storage path");

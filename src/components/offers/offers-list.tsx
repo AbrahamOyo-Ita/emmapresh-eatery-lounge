@@ -6,11 +6,20 @@ import { usePromotionsStore } from "@/stores/promotions-store";
 
 export function OffersList() {
   const promotions = usePromotionsStore((state) => state.promotions);
+  const setPromotions = usePromotionsStore((state) => state.setPromotions);
   const [hydrated, setHydrated] = React.useState(false);
   React.useEffect(() => {
     const frame = window.requestAnimationFrame(() => setHydrated(true));
     return () => window.cancelAnimationFrame(frame);
   }, []);
+  React.useEffect(() => {
+    let active = true;
+    fetch("/api/promotions", { cache: "no-store" }).then((response) => response.json()).then((result) => {
+      if (!active || !result.ok || !result.data?.length) return;
+      setPromotions(result.data.map((row: Record<string, string>) => ({ id: row.id, title: row.title, description: row.description, code: row.code, discount: row.discount, validUntil: row.valid_until })));
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [setPromotions]);
   const visible = hydrated ? promotions : [];
 
   if (!hydrated) return <div className="h-48 animate-pulse rounded-card bg-cream-soft" aria-label="Loading offers" />;

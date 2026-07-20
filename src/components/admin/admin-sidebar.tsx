@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingBag, Wallet, ChefHat, UtensilsCrossed, CakeSlice,
   GraduationCap, Building2, CalendarCheck, Users, Megaphone, FileText,
-  Settings, PanelTop, ContactRound, X,
+  Settings, PanelTop, ContactRound, X, KanbanSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +35,7 @@ const navGroups = [
     label: "Management",
     items: [
       { label: "CRM", href: "/admin/crm", icon: ContactRound },
+      { label: "Projects", href: "/admin/projects", icon: KanbanSquare },
       { label: "CMS", href: "/admin/cms", icon: PanelTop },
       { label: "Customers", href: "/admin/customers", icon: Users },
       { label: "Promotions", href: "/admin/promotions", icon: Megaphone },
